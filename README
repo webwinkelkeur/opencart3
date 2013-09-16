@@ -1,0 +1,19 @@
+Webwinkelkeur OpenCart module
+=============================
+
+Deze module integreert de Webwinkelkeur sitebar module in uw webshop. De module 
+kan eenvoudig worden geïnstalleerd. Gebruik daarvoor de onderstaande 
+installatieinstructies.
+
+(C) 2013 Albert Peschar
+
+
+Installatieinstructies
+----------------------
+
+    1. Upload de bestanden in de map src/ naar de webserver.
+
+    2. De module kan nu worden ingeschakeld in de administratieinterface.
+
+
+vim: set fo=aw :
