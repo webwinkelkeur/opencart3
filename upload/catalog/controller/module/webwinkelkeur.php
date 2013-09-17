@@ -13,4 +13,20 @@ class ControllerModuleWebwinkelkeur extends Controller {
             $this->document->addScript('//www.webwinkelkeur.nl/js/webwinkel_button.php?id=' . $shop_id);
         }
     }
+
+    public function cron() {
+        $this->load->model('setting/setting');
+
+        $this->load->model('module/webwinkelkeur');
+
+        ignore_user_abort(true);
+        
+        $settings = $this->model_setting_setting->getSetting('webwinkelkeur');
+        
+        if(!empty($settings['shop_id']) && !empty($settings['api_key']) && !empty($settings['invite'])) {
+            $this->model_module_webwinkelkeur->sendInvites($settings['shop_id'], $settings['api_key'], $settings['invite_delay']);
+        }
+
+        exit;
+    }
 }
