@@ -17,7 +17,7 @@ class ModelModuleWebwinkelkeur extends Model {
                 'order'     => $order['order_id'],
                 'delay'     => $delay,
             );
-            $url = 'http://osticket.wsftestzone.nl/api.php?' . http_build_query($parameters);
+            $url = 'http://www.webwinkelkeur.nl/api.php?' . http_build_query($parameters);
             $this->db->query("UPDATE `" . DB_PREFIX . "order` SET webwinkelkeur_invite_tries = webwinkelkeur_invite_tries + 1, webwinkelkeur_invite_time = " . time() . " WHERE order_id = " . $order['order_id'] . " AND webwinkelkeur_invite_tries = " . $order['webwinkelkeur_invite_tries']);
             $response = @file_get_contents($url);
             if(preg_match('|^Success:|', $response) || preg_match('|invite already sent|', $response)) {
