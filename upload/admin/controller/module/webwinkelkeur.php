@@ -5,10 +5,13 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
         $this->document->setTitle('Webwinkelkeur');
 
-		if($this->request->server['REQUEST_METHOD'] == 'POST') {
+        $this->data['error_warning'] = array();
+
+		if($this->request->server['REQUEST_METHOD'] == 'POST' && $this->validateForm()) {
             $this->editSettings(array(
                 'shop_id'       => $this->request->post['shop_id'],
                 'api_key'       => $this->request->post['api_key'],
+                'sidebar'       => !!$this->request->post['sidebar'],
                 'invite'        => !!$this->request->post['invite'],
                 'invite_delay'  => (int) $this->request->post['invite_delay'],
             ));
@@ -30,12 +33,20 @@ class ControllerModuleWebwinkelkeur extends Controller {
       		'separator' => ' :: '
    		);
 
-        $this->data['error_warning'] = array();
-
         $this->data['cancel'] = $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'ssl');
 
         foreach($this->getSettings() as $key => $value)
             $this->data[$key] = $value;
+
+        foreach(array(
+            'shop_id',
+            'api_key',
+            'sidebar',
+            'invite',
+            'invite_delay',
+        ) as $field)
+            if(isset($this->request->post[$field]))
+                $this->data[$field] = $this->request->post[$field];
 
 		$this->template = 'module/webwinkelkeur.tpl';
 		$this->children = array(
@@ -44,6 +55,20 @@ class ControllerModuleWebwinkelkeur extends Controller {
 		);
 				
 		$this->response->setOutput($this->render());
+    }
+
+    private function validateForm() {
+        $this->request->post['shop_id'] = trim($this->request->post['shop_id']);
+
+        if(!$this->request->post['shop_id'])
+            $this->data['error_warning'][] = 'Vul uw webwinkel ID in.';
+        elseif(!ctype_digit($this->request->post['shop_id']))
+            $this->data['error_warning'][] = 'Uw webwinkel ID mag alleen cijfers bevatten.';
+
+        if($this->request->post['invite'] && !$this->request->post['api_key'])
+            $this->data['error_warning'][] = 'Vul uw API key in.';
+
+        return empty($this->data['error_warning']);
     }
 
     public function install() {
@@ -60,6 +85,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
         return array_merge(array(
             'shop_id'       => false,
             'api_key'       => false,
+            'sidebar'       => true,
             'invite'        => false,
             'invite_delay'  => 7,
         ), $settings);

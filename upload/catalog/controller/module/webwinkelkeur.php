@@ -5,7 +5,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
         $settings = $this->model_setting_setting->getSetting('webwinkelkeur');
 
-        if(!empty($settings['shop_id'])) {
+        if(!empty($settings['shop_id']) && !empty($settings['sidebar'])) {
             $shop_id = (int) $settings['shop_id'];
             $this->document->addStyle('//www.webwinkelkeur.nl/css/webwinkelkeur_button.css');
             $this->document->addScript('//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js');

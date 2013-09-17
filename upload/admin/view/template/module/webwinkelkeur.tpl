@@ -6,7 +6,9 @@
     <?php } ?>
   </div>
   <?php if ($error_warning) { ?>
-  <div class="warning"><?php echo $error_warning; ?></div>
+  <?php foreach ($error_warning as $error_message): ?>
+  <div class="warning"><?php echo $error_message; ?></div>
+  <?php endforeach; ?>
   <?php } ?>
   <div class="box">
     <div class="heading">
@@ -23,6 +25,19 @@
           <tr>
             <td><span class="required">*</span> API key:</td>
             <td><input type="text" name="api_key" value="<?php echo $api_key; ?>" /></td>
+          </tr>
+          <tr>
+            <td>Sidebar weergeven:</td>
+            <td>
+              <label>
+                <input type="radio" name="sidebar" value="1" <?php if($sidebar) echo "checked"; ?> />
+                Ja
+              </label>
+              <label>
+                <input type="radio" name="sidebar" value="0" <?php if(!$sidebar) echo "checked"; ?> />
+                Nee
+              </label>
+            </td>
           </tr>
           <tr>
             <td>
