@@ -5,6 +5,8 @@ Deze module integreert de Webwinkelkeur sitebar module in uw webshop. De module
 kan eenvoudig worden geïnstalleerd. Gebruik daarvoor de onderstaande 
 installatieinstructies.
 
+De module is getest met OpenCart versies 1.5.4 tot en met 1.5.5.1.
+
 (C) 2013 Albert Peschar
 
 
@@ -14,6 +16,8 @@ Installatieinstructies
     1. Upload de bestanden in de map src/ naar de webserver.
 
     2. De module kan nu worden ingeschakeld in de administratieinterface.
+
+    3. Vul uw webwinkel ID en API key in en configureer de module.
 
 
 vim: set fo=aw :
