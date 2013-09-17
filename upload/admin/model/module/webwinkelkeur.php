@@ -15,6 +15,13 @@ class ModelModuleWebwinkelkeur extends Model {
             ");
         }
 
+        if(!in_array('webwinkelkeur_invite_time', $this->getColumnNames('order'))) {
+            $this->db->query("
+                ALTER TABLE `" . DB_PREFIX . "order`
+                ADD COLUMN webwinkelkeur_invite_time INT NOT NULL DEFAULT 0
+            ");
+        }
+
         $this->db->query("UPDATE `" . DB_PREFIX . "order` SET webwinkelkeur_invite_sent = 1");
 
         $this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "webwinkelkeur_invite_error`");
@@ -37,6 +44,10 @@ class ModelModuleWebwinkelkeur extends Model {
 
         if(in_array('webwinkelkeur_invite_tries', $this->getColumnNames('order'))) {
             $this->db->query("ALTER TABLE `" . DB_PREFIX . "order` DROP COLUMN webwinkelkeur_invite_tries");
+        }
+
+        if(in_array('webwinkelkeur_invite_time', $this->getColumnNames('order'))) {
+            $this->db->query("ALTER TABLE `" . DB_PREFIX . "order` DROP COLUMN webwinkelkeur_invite_time");
         }
 
         $this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "webwinkelkeur_invite_error`");
