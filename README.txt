@@ -7,7 +7,10 @@ installatieinstructies.
 
 De module is getest met OpenCart versies 1.5.4 tot en met 1.5.5.1.
 
-(C) 2013 Albert Peschar
+U kunt de module ook laten installeren door de ontwikkelaar. Neem daarvoor per 
+e-mail contact op.
+
+(C) 2013 Albert Peschar <albert@peschar.net>
 
 
 Installatieinstructies
@@ -19,5 +22,12 @@ Installatieinstructies
 
     3. Vul uw webwinkel ID en API key in en configureer de module.
 
+    4. Wilt u uitnodigingen verzenden, dan moet er een cronjob worden ingesteld.  
+    De cronjob moet elke avond worden uitgevoerd en deze URL aanroepen:
 
-vim: set fo=aw :
+      http://www.uw-webwinkel.nl/index.php?route=module/webwinkelkeur/cron
+
+    Hiervoor kunt u de volgende regel in uw crontab plaatsen:
+
+      30 23 * * * wget --quiet -O- 'http://www.uw-webwinkel.nl/index.php?route=module/webwinkel/cron'
+
