@@ -29,5 +29,5 @@ Installatieinstructies
 
     Hiervoor kunt u de volgende regel in uw crontab plaatsen:
 
-      30 23 * * * wget --quiet -O- 'http://www.uw-webwinkel.nl/index.php?route=module/webwinkel/cron'
+      30 23 * * * wget --quiet -O- 'http://www.uw-webwinkel.nl/index.php?route=module/webwinkelkeur/cron'
 
