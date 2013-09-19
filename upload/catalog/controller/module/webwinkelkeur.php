@@ -8,11 +8,15 @@ class ControllerModuleWebwinkelkeur extends Controller {
         $settings = $this->model_setting_setting->getSetting('webwinkelkeur');
 
         if(!empty($settings['shop_id']) && !empty($settings['sidebar'])) {
-            $shop_id = (int) $settings['shop_id'];
-            $this->document->addStyle('//www.webwinkelkeur.nl/css/webwinkelkeur_button.css');
-            $this->document->addScript('//ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js');
-            $this->document->addScript('//www.webwinkelkeur.nl/fancybox/jquery.fancybox-1.3.4.pack.js');
-            $this->document->addScript('//www.webwinkelkeur.nl/js/webwinkel_button.php?id=' . $shop_id);
+            $this->data['shop_id'] = (int) $settings['shop_id'];
+
+            if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/module/webwinkelkeur.tpl')) {
+                $this->template = $this->config->get('config_template') . '/template/module/webwinkelkeur.tpl';
+            } else {
+                $this->template = 'default/template/module/webwinkelkeur.tpl';
+            }
+
+            $this->render();
         }
     }
 
