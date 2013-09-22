@@ -1,7 +1,7 @@
-Webwinkelkeur OpenCart module
+WebwinkelKeur OpenCart module
 =============================
 
-Deze module integreert de Webwinkelkeur sitebar module in uw webshop. De module 
+Deze module integreert de WebwinkelKeur sitebar module in uw webshop. De module 
 kan eenvoudig worden geïnstalleerd. Gebruik daarvoor de onderstaande 
 installatieinstructies.
 

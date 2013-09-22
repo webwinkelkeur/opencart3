@@ -12,7 +12,7 @@
   <?php } ?>
   <div class="box">
     <div class="heading">
-      <h1><img src="view/image/information.png" alt="" /> Webwinkelkeur</h1>
+      <h1><img src="view/image/information.png" alt="" /> WebwinkelKeur</h1>
       <div class="buttons"><a onclick="$('#form').submit();" class="button">Opslaan</a><a href="<?php echo $cancel; ?>" class="button">Annuleren</a></div>
     </div>
     <div class="content">

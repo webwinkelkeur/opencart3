@@ -1,2 +1,2 @@
 <?php
-$_['heading_title'] = 'Webwinkelkeur';
+$_['heading_title'] = 'WebwinkelKeur';
