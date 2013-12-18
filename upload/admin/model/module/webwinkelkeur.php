@@ -63,4 +63,15 @@ class ModelModuleWebwinkelkeur extends Model {
 
         return $column_names;
     }
+
+    public function getInviteErrors() {
+        $until = time() - 86400 * 3;
+        $query = $this->db->query("
+            SELECT *
+            FROM `" . DB_PREFIX . "webwinkelkeur_invite_error`
+            WHERE time > $until
+            ORDER BY time
+        ");
+        return $query->rows;
+    }
 }

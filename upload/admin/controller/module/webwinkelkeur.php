@@ -3,6 +3,8 @@ class ControllerModuleWebwinkelkeur extends Controller {
     public function index() {
         $this->language->load('common/header');
 
+        $this->load->model('module/webwinkelkeur');
+
         $this->document->setTitle('WebwinkelKeur');
 
         $this->data['error_warning'] = array();
@@ -47,6 +49,8 @@ class ControllerModuleWebwinkelkeur extends Controller {
         ) as $field)
             if(isset($this->request->post[$field]))
                 $this->data[$field] = $this->request->post[$field];
+
+        $this->data['invite_errors'] = $this->model_module_webwinkelkeur->getInviteErrors();
 
 		$this->template = 'module/webwinkelkeur.tpl';
 		$this->children = array(
