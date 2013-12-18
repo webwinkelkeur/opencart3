@@ -1,4 +1,5 @@
 <?php
+require_once DIR_SYSTEM . 'library/Peschar_URLRetriever.php';
 class ModelModuleWebwinkelkeur extends Model {
     public function getOrdersToInvite() {
         $max_time = time() - 1800;
@@ -29,7 +30,8 @@ class ModelModuleWebwinkelkeur extends Model {
                     'delay'     => $delay,
                 );
                 $url = 'http://www.webwinkelkeur.nl/api.php?' . http_build_query($parameters);
-                $response = @file_get_contents($url);
+                $retriever = new Peschar_URLRetriever();
+                $response = $retriever->retrieve($url);
                 if(preg_match('|^Success:|', $response) || preg_match('|invite already sent|', $response)) {
                     $this->db->query("UPDATE `" . DB_PREFIX . "order` SET webwinkelkeur_invite_sent = 1 WHERE order_id = " . $order['order_id']);
                 } else {
