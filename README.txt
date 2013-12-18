@@ -5,7 +5,7 @@ Deze module integreert de WebwinkelKeur sitebar module in uw webshop. De module
 kan eenvoudig worden geïnstalleerd. Gebruik daarvoor de onderstaande 
 installatieinstructies.
 
-De module is getest met OpenCart versies 1.5.4 tot en met 1.5.5.1.
+De module is getest met OpenCart versies 1.5.4 en later.
 
 U kunt de module ook laten installeren door de ontwikkelaar. Neem daarvoor per 
 e-mail contact op.
