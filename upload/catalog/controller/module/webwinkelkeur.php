@@ -7,8 +7,21 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
         $settings = $this->model_setting_setting->getSetting('webwinkelkeur');
 
-        if(!empty($settings['shop_id']) && !empty($settings['sidebar'])) {
-            $this->data['shop_id'] = (int) $settings['shop_id'];
+        if(!empty($settings['shop_id']) &&
+           (!empty($settings['sidebar']) || !empty($settings['tooltip']))
+        ) {
+            $js_settings = array(
+                '_webwinkelkeur_id' => (int) $settings['shop_id'],
+                '_webwinkelkeur_sidebar' => !empty($settings['sidebar']),
+                '_webwinkelkeur_tooltip' => !empty($settings['tooltip']),
+            );
+            if(!empty($settings['sidebar_position'])) {
+                $js_settings['_webwinkelkeur_sidebar_position'] = $settings['sidebar_position'];
+            }
+            if(!empty($settings['sidebar_top'])) {
+                $js_settings['_webwinkelkeur_sidebar_top'] = $settings['sidebar_top'];
+            }
+            $this->data['settings'] = $js_settings;
 
             if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/module/webwinkelkeur.tpl')) {
                 $this->template = $this->config->get('config_template') . '/template/module/webwinkelkeur.tpl';

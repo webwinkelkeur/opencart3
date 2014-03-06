@@ -11,11 +11,14 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
 		if($this->request->server['REQUEST_METHOD'] == 'POST' && $this->validateForm()) {
             $this->editSettings(array(
-                'shop_id'       => $this->request->post['shop_id'],
-                'api_key'       => $this->request->post['api_key'],
-                'sidebar'       => !!$this->request->post['sidebar'],
-                'invite'        => !!$this->request->post['invite'],
-                'invite_delay'  => (int) $this->request->post['invite_delay'],
+                'shop_id'          => trim($this->request->post['shop_id']),
+                'api_key'          => trim($this->request->post['api_key']),
+                'sidebar'          => !!$this->request->post['sidebar'],
+                'sidebar_position' => $this->request->post['sidebar_position'],
+                'sidebar_top'      => $this->request->post['sidebar_top'],
+                'tooltip'          => !!$this->request->post['tooltip'],
+                'invite'           => (int) $this->request->post['invite'],
+                'invite_delay'     => (int) $this->request->post['invite_delay'],
             ));
 
 			$this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
@@ -97,11 +100,14 @@ class ControllerModuleWebwinkelkeur extends Controller {
         $settings = $this->model_setting_setting->getSetting('webwinkelkeur');
 
         return array_merge(array(
-            'shop_id'       => false,
-            'api_key'       => false,
-            'sidebar'       => true,
-            'invite'        => false,
-            'invite_delay'  => 7,
+            'shop_id'          => false,
+            'api_key'          => false,
+            'sidebar'          => true,
+            'sidebar_position' => 'left',
+            'sidebar_top'      => '',
+            'tooltip'          => true,
+            'invite'           => 0,
+            'invite_delay'     => 7,
         ), $settings);
     }
     

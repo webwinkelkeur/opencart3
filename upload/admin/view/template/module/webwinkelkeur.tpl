@@ -40,18 +40,42 @@
             </td>
           </tr>
           <tr>
+            <td>Sidebar positie:</td>
+            <td>
+              <label>
+                <input type="radio" name="sidebar_position" value="left" <?php if($sidebar_position == 'left') echo "checked"; ?> />
+                Links
+              </label>
+              <label>
+                <input type="radio" name="sidebar_position" value="right" <?php if($sidebar_position == 'right') echo "checked"; ?> />
+                Rechts
+              </label>
+            </td>
+          </tr>
+          <tr>
+            <td>
+              Sidebar hoogte:<br/>
+              <span class="help">aantal pixels vanaf de bovenkant</span>
+            </td>
+            <td><input type="text" name="sidebar_top" size="2" value="<?php echo $sidebar_top; ?>" /></td>
+          </tr>
+          <tr>
             <td>
               Uitnodiging versturen:<br />
               <span class="help">alleen beschikbaar voor Plus-leden</span>
             </td>
             <td>
               <label>
-                <input type="radio" name="invite" value="1" <?php if($invite) echo "checked"; ?> />
-                Ja
-              </label>
+                <input type="radio" name="invite" value="1" <?php if($invite == 1) echo "checked"; ?> />
+                Ja, na elke bestelling
+              </label><br />
+              <label>
+                <input type="radio" name="invite" value="2" <?php if($invite == 2) echo "checked"; ?> />
+                Ja, alleen bij de eerste bestelling
+              </label><br />
               <label>
                 <input type="radio" name="invite" value="0" <?php if(!$invite) echo "checked"; ?> />
-                Nee
+                Nee, geen uitnodigingen versturen
               </label>
             </td>
           </tr>
@@ -61,6 +85,19 @@
               <span class="help">de uitnodiging wordt verstuurd nadat het opgegeven aantal dagen is verstreken</span>
             </td>
             <td><input type="text" name="invite_delay" size="2" value="<?php echo $invite_delay; ?>" /></td>
+          </tr>
+          <tr>
+            <td>Tooltip weergeven:</td>
+            <td>
+              <label>
+                <input type="radio" name="tooltip" value="1" <?php if($tooltip) echo "checked"; ?> />
+                Ja
+              </label>
+              <label>
+                <input type="radio" name="tooltip" value="0" <?php if(!$tooltip) echo "checked"; ?> />
+                Nee
+              </label>
+            </td>
           </tr>
         </table>
       </form>
