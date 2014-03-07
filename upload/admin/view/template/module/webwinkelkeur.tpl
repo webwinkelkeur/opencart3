@@ -99,6 +99,19 @@
               </label>
             </td>
           </tr>
+          <tr>
+            <td>JavaScript-integratie:</td>
+            <td>
+              <label>
+                <input type="radio" name="javascript" value="1" <?php if($javascript) echo "checked"; ?> />
+                Ja
+              </label>
+              <label>
+                <input type="radio" name="javascript" value="0" <?php if(!$javascript) echo "checked"; ?> />
+                Nee
+              </label>
+            </td>
+          </tr>
         </table>
       </form>
     </div>

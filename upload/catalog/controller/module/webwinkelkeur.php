@@ -8,7 +8,8 @@ class ControllerModuleWebwinkelkeur extends Controller {
         $settings = $this->model_setting_setting->getSetting('webwinkelkeur');
 
         if(!empty($settings['shop_id']) &&
-           (!empty($settings['sidebar']) || !empty($settings['tooltip']))
+           (!empty($settings['sidebar']) || !empty($settings['tooltip'])
+            || !empty($settings['javascript']))
         ) {
             $js_settings = array(
                 '_webwinkelkeur_id' => (int) $settings['shop_id'],

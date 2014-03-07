@@ -16,9 +16,10 @@ class ControllerModuleWebwinkelkeur extends Controller {
                 'sidebar'          => !!$this->request->post['sidebar'],
                 'sidebar_position' => $this->request->post['sidebar_position'],
                 'sidebar_top'      => $this->request->post['sidebar_top'],
-                'tooltip'          => !!$this->request->post['tooltip'],
                 'invite'           => (int) $this->request->post['invite'],
                 'invite_delay'     => (int) $this->request->post['invite_delay'],
+                'tooltip'          => !!$this->request->post['tooltip'],
+                'javascript'       => !!$this->request->post['javascript'],
             ));
 
 			$this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
@@ -105,9 +106,10 @@ class ControllerModuleWebwinkelkeur extends Controller {
             'sidebar'          => true,
             'sidebar_position' => 'left',
             'sidebar_top'      => '',
-            'tooltip'          => true,
             'invite'           => 0,
             'invite_delay'     => 7,
+            'tooltip'          => true,
+            'javascript'       => true,
         ), $settings);
     }
     
