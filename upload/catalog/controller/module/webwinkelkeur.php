@@ -44,7 +44,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
         $settings = $this->model_setting_setting->getSetting('webwinkelkeur');
         
         if(!empty($settings['shop_id']) && !empty($settings['api_key']) && !empty($settings['invite'])) {
-            $this->model_module_webwinkelkeur->sendInvites($settings['shop_id'], $settings['api_key'], $settings['invite_delay']);
+            $this->model_module_webwinkelkeur->sendInvites($settings['shop_id'], $settings['api_key'], $settings['invite_delay'], $settings['invite'] == 2);
         }
     }
 }

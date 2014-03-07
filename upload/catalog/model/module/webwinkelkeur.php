@@ -9,7 +9,7 @@ class ModelModuleWebwinkelkeur extends Model {
         return $query->rows;
     }
 
-    public function sendInvites($shop_id, $api_key, $delay) {
+    public function sendInvites($shop_id, $api_key, $delay, $noremail) {
         foreach($this->getOrdersToInvite() as $order) {
             $this->db->query("
                 UPDATE `" . DB_PREFIX . "order`
@@ -29,6 +29,8 @@ class ModelModuleWebwinkelkeur extends Model {
                     'order'     => $order['order_id'],
                     'delay'     => $delay,
                 );
+                if($noremail)
+                    $parameters['noremail'] = '1';
                 $url = 'http://www.webwinkelkeur.nl/api.php?' . http_build_query($parameters);
                 $retriever = new Peschar_URLRetriever();
                 $response = $retriever->retrieve($url);
