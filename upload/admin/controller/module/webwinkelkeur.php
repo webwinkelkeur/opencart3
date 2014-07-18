@@ -85,8 +85,6 @@ class ControllerModuleWebwinkelkeur extends Controller {
         $this->model_module_webwinkelkeur->install();
 
         $this->editSettings();
-
-        $this->redirect($this->url->link('module/webwinkelkeur', 'token=' . $this->session->data['token'], 'SSL'));
     }
 
     public function uninstall() {
