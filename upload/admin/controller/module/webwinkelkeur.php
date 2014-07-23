@@ -48,8 +48,13 @@ class ControllerModuleWebwinkelkeur extends Controller {
             'shop_id',
             'api_key',
             'sidebar',
+            'sidebar_position',
+            'sidebar_top',
             'invite',
             'invite_delay',
+            'tooltip',
+            'javascript',
+            'rich_snippet',
         ) as $field)
             if(isset($this->request->post[$field]))
                 $this->data[$field] = $this->request->post[$field];
