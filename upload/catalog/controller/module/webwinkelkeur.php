@@ -77,7 +77,10 @@ class ControllerModuleWebwinkelkeur extends Controller {
         ) {
             $data = json_decode($json, true);
         } else {
-            $json = @file_get_contents($url);
+            $context = stream_context_create(array(
+                'http' => array('timeout' => 3),
+            ));
+            $json = @file_get_contents($url, false, $context);
             if(!$json) return;
 
             $data = @json_decode($json, true);
