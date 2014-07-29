@@ -112,6 +112,22 @@
               </label>
             </td>
           </tr>
+          <tr>
+            <td>
+              Rich snippet:<br/>
+              <span class="help">Voeg een <a href="https://support.google.com/webmasters/answer/99170?hl=nl">rich snippet</a> toe aan de footer. Google kan uw waardering dan in de zoekresultaten tonen.</span>
+            </td>
+            <td>
+              <label>
+                <input type="radio" name="rich_snippet" value="1" <?php if($rich_snippet) echo "checked"; ?> />
+                Ja
+              </label>
+              <label>
+                <input type="radio" name="rich_snippet" value="0" <?php if(!$rich_snippet) echo "checked"; ?> />
+                Nee
+              </label>
+            </td>
+          </tr>
         </table>
       </form>
     </div>

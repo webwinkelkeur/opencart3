@@ -1,3 +1,4 @@
+<?php if(isset($settings)): ?>
 <script type="text/javascript">
 (function() {
     <?php foreach($settings as $key => $value): ?>
@@ -8,4 +9,8 @@
     var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(js, s);
 })();
 </script>
+<?php endif; ?>
+<?php if(isset($rich_snippet)): ?>
+<?php echo $rich_snippet; ?>
+<?php endif; ?>
 <?php // vim: set ft=php :

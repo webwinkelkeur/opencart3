@@ -20,6 +20,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
                 'invite_delay'     => (int) $this->request->post['invite_delay'],
                 'tooltip'          => !!$this->request->post['tooltip'],
                 'javascript'       => !!$this->request->post['javascript'],
+                'rich_snippet'     => !!$this->request->post['rich_snippet'],
             ));
 
 			$this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
@@ -113,6 +114,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
             'invite_delay'     => 7,
             'tooltip'          => true,
             'javascript'       => true,
+            'rich_snippet'     => false,
         ), $settings);
     }
     
