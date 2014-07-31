@@ -114,8 +114,8 @@
           </tr>
           <tr>
             <td>
-              Rich snippet:<br/>
-              <span class="help">Voeg een <a href="https://support.google.com/webmasters/answer/99170?hl=nl">rich snippet</a> toe aan de footer. Google kan uw waardering dan in de zoekresultaten tonen.</span>
+              Rich snippet sterren:<br/>
+              <span class="help">Voeg een <a href="https://support.google.com/webmasters/answer/99170?hl=nl">rich snippet</a> toe aan de footer. Google kan uw waardering dan in de zoekresultaten tonen. Gebruik op eigen risico.</span>
             </td>
             <td>
               <label>
