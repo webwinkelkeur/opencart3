@@ -109,9 +109,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
         $errors = array();
 
-        if(!$data['shop_id'])
-            $errors[] = 'Vul uw webwinkel ID in.';
-        elseif(!ctype_digit($data['shop_id']))
+        if(!empty($data['shop_id']) && !ctype_digit($data['shop_id']))
             $errors[] = 'Uw webwinkel ID mag alleen cijfers bevatten.';
 
         if($data['invite'] && !$data['api_key'])
