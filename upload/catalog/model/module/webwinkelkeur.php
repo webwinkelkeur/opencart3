@@ -4,12 +4,34 @@ class ModelModuleWebwinkelkeur extends Model {
     public function getOrdersToInvite() {
         $max_time = time() - 1800;
 
-        $query = $this->db->query("SELECT * FROM `" . DB_PREFIX . "order` WHERE webwinkelkeur_invite_sent = 0 AND webwinkelkeur_invite_tries < 10 AND webwinkelkeur_invite_time < $max_time AND order_status_id IN (3, 5)");
+        if($this->getMultistore())
+            $where = 'store_id = ' . (int) $this->config->get('config_store_id');
+        else
+            $where = '1';
+
+        $query = $this->db->query("
+            SELECT *
+            FROM `" . DB_PREFIX . "order`
+            WHERE
+                webwinkelkeur_invite_sent = 0
+                AND webwinkelkeur_invite_tries < 10
+                AND webwinkelkeur_invite_time < $max_time
+                AND order_status_id IN (3, 5)
+                AND $where
+        ");
 
         return $query->rows;
     }
 
-    public function sendInvites($shop_id, $api_key, $delay, $noremail) {
+    public function sendInvites() {
+        $settings = $this->getSettings();
+
+        if(empty($settings['shop_id']) ||
+           empty($settings['api_key']) ||
+           empty($settings['invite'])
+        )
+            continue;
+
         foreach($this->getOrdersToInvite() as $order) {
             $this->db->query("
                 UPDATE `" . DB_PREFIX . "order`
@@ -23,13 +45,13 @@ class ModelModuleWebwinkelkeur extends Model {
             ");
             if($this->db->countAffected()) {
                 $parameters = array(
-                    'id'        => $shop_id,
-                    'password'  => $api_key,
+                    'id'        => $settings['shop_id'],
+                    'password'  => $settings['api_key'],
                     'email'     => $order['email'],
                     'order'     => $order['order_id'],
-                    'delay'     => $delay,
+                    'delay'     => $settings['invite_delay'],
                 );
-                if($noremail)
+                if($settings['invite'] == 2)
                     $parameters['noremail'] = '1';
                 $url = 'http://www.webwinkelkeur.nl/api.php?' . http_build_query($parameters);
                 $retriever = new Peschar_URLRetriever();
@@ -41,5 +63,29 @@ class ModelModuleWebwinkelkeur extends Model {
                 }
             }
         }
+    }
+
+    public function getSettings() {
+        $this->load->model('setting/setting');
+
+        $settings = $this->model_setting_setting->getSetting('webwinkelkeur');
+
+        if(!empty($settings['multistore'])
+           && ($store_id = $this->config->get('config_store_id'))
+        ) {
+            if(empty($settings['store'][$store_id]))
+                return array();
+            return $settings['store'][$store_id];
+        } else {
+            return $settings;
+        }
+    }
+
+    public function getMultistore() {
+        $this->load->model('setting/setting');
+
+        $settings = $this->model_setting_setting->getSetting('webwinkelkeur');
+
+        return !empty($settings['multistore']);
     }
 }

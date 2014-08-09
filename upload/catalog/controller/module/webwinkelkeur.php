@@ -1,11 +1,9 @@
 <?php
 class ControllerModuleWebwinkelkeur extends Controller {
     public function index() {
-        $this->load->model('setting/setting');
-
         $this->load->model('module/webwinkelkeur');
 
-        $settings = $this->model_setting_setting->getSetting('webwinkelkeur');
+        $settings = $this->model_module_webwinkelkeur->getSettings();
 
         if(empty($settings['shop_id']))
             return;
@@ -42,17 +40,11 @@ class ControllerModuleWebwinkelkeur extends Controller {
     }
 
     public function cron() {
-        $this->load->model('setting/setting');
-
         $this->load->model('module/webwinkelkeur');
 
         ignore_user_abort(true);
-        
-        $settings = $this->model_setting_setting->getSetting('webwinkelkeur');
-        
-        if(!empty($settings['shop_id']) && !empty($settings['api_key']) && !empty($settings['invite'])) {
-            $this->model_module_webwinkelkeur->sendInvites($settings['shop_id'], $settings['api_key'], $settings['invite_delay'], $settings['invite'] == 2);
-        }
+
+        $this->model_module_webwinkelkeur->sendInvites();
     }
 
     private function getRichSnippet($settings) {

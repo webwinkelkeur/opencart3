@@ -74,4 +74,15 @@ class ModelModuleWebwinkelkeur extends Model {
         ");
         return $query->rows;
     }
+
+    public function getStores() {
+        $query = $this->db->query("
+            SELECT
+                store_id,
+                name
+            FROM `" . DB_PREFIX . "store`
+            ORDER BY store_id
+        ");
+        return $query->rows;
+    }
 }

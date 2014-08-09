@@ -9,21 +9,28 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
         $this->data['error_warning'] = array();
 
-		if($this->request->server['REQUEST_METHOD'] == 'POST' && $this->validateForm()) {
-            $this->editSettings(array(
-                'shop_id'          => trim($this->request->post['shop_id']),
-                'api_key'          => trim($this->request->post['api_key']),
-                'sidebar'          => !!$this->request->post['sidebar'],
-                'sidebar_position' => $this->request->post['sidebar_position'],
-                'sidebar_top'      => $this->request->post['sidebar_top'],
-                'invite'           => (int) $this->request->post['invite'],
-                'invite_delay'     => (int) $this->request->post['invite_delay'],
-                'tooltip'          => !!$this->request->post['tooltip'],
-                'javascript'       => !!$this->request->post['javascript'],
-                'rich_snippet'     => !!$this->request->post['rich_snippet'],
-            ));
+        $settings = $this->getSettings();
 
-			$this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
+        $stores = $this->model_module_webwinkelkeur->getStores();
+
+		if($this->request->server['REQUEST_METHOD'] == 'POST') {
+            $validated = $this->validateForm();
+
+            $new_settings = $this->cleanSettings($this->request->post);
+            $new_settings['multistore'] = !!$this->request->post['multistore'];
+
+            if($new_settings['multistore'])
+                foreach($stores as $store)
+                    $new_settings['store'][$store['store_id']] = isset($this->request->post['store'][$store['store_id']]) ? $this->cleanSettings($this->request->post['store'][$store['store_id']]) : $this->defaultSettings();
+
+            $this->editSettings($new_settings);
+
+            if(!$validated)
+                $settings = $this->getSettings();
+            elseif($new_settings['multistore'] != $settings['multistore'])
+                $this->redirect($this->url->link('module/webwinkelkeur', 'token=' . $this->session->data['token'], 'SSL'));
+            else
+                $this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
         }
 
   		$this->data['breadcrumbs'] = array();
@@ -42,23 +49,28 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
         $this->data['cancel'] = $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'ssl');
 
-        foreach($this->getSettings() as $key => $value)
-            $this->data[$key] = $value;
+        $this->data['stores'] = $stores;
 
-        foreach(array(
-            'shop_id',
-            'api_key',
-            'sidebar',
-            'sidebar_position',
-            'sidebar_top',
-            'invite',
-            'invite_delay',
-            'tooltip',
-            'javascript',
-            'rich_snippet',
-        ) as $field)
-            if(isset($this->request->post[$field]))
-                $this->data[$field] = $this->request->post[$field];
+        $this->data['view_stores'] = array(array(
+            'store_id' => 0,
+            'name'     => $this->config->get('config_name'),
+        ));
+
+        if($settings['multistore'])
+            $this->data['view_stores'] = array_merge($this->data['view_stores'], $this->data['stores']);
+
+        foreach($this->data['view_stores'] as &$store) {
+            if($store['store_id'] && isset($settings['store'][$store['store_id']]))
+                $store['settings'] = $settings['store'][$store['store_id']];
+            elseif($store['store_id'])
+                $store['settings'] = $this->defaultSettings();
+            else
+                $store['settings'] = array_merge($settings, $this->request->post);
+            $store['field_name'] = $store['store_id'] ? "store[{$store['store_id']}][%s]" : "%s";
+        }
+
+        foreach($settings as $key => $value)
+            $this->data[$key] = $value;
 
         $this->data['invite_errors'] = $this->model_module_webwinkelkeur->getInviteErrors();
 
@@ -72,17 +84,37 @@ class ControllerModuleWebwinkelkeur extends Controller {
     }
 
     private function validateForm() {
-        $this->request->post['shop_id'] = trim($this->request->post['shop_id']);
+        if($this->request->post['multistore'])
+            $default = $this->config->get('config_name') . ': ';
+        else
+            $default = '';
 
-        if(!$this->request->post['shop_id'])
-            $this->data['error_warning'][] = 'Vul uw webwinkel ID in.';
-        elseif(!ctype_digit($this->request->post['shop_id']))
-            $this->data['error_warning'][] = 'Uw webwinkel ID mag alleen cijfers bevatten.';
+        foreach($this->validateSettings($this->request->post) as $error)
+            $this->data['error_warning'][] = $default . $error;
 
-        if($this->request->post['invite'] && !$this->request->post['api_key'])
-            $this->data['error_warning'][] = 'Vul uw API key in.';
+        if($this->request->post['multistore'] && !empty($this->request->post['store']))
+            foreach($this->request->post['store'] as $store)
+                foreach($this->validateSettings($store) as $error)
+                    $this->data['error_warning'][] = $store['store_name'] . ': ' . $error;
 
         return empty($this->data['error_warning']);
+    }
+
+    private function validateSettings(array &$data) {
+        $data['shop_id'] = trim($data['shop_id']);
+        $data['api_key'] = trim($data['api_key']);
+
+        $errors = array();
+
+        if(!$data['shop_id'])
+            $errors[] = 'Vul uw webwinkel ID in.';
+        elseif(!ctype_digit($data['shop_id']))
+            $errors[] = 'Uw webwinkel ID mag alleen cijfers bevatten.';
+
+        if($data['invite'] && !$data['api_key'])
+            $errors[] = 'Vul uw API key in.';
+
+        return $errors;
     }
 
     public function install() {
@@ -101,9 +133,15 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
     private function getSettings() {
         $this->load->model('setting/setting');
-
         $settings = $this->model_setting_setting->getSetting('webwinkelkeur');
+        return array_merge(
+            array('multistore' => false),
+            $this->defaultSettings($settings)
+        );
+    }
 
+    private function defaultSettings($data = array()) {
+        if(!is_array($data)) $data = array();
         return array_merge(array(
             'shop_id'          => false,
             'api_key'          => false,
@@ -115,7 +153,24 @@ class ControllerModuleWebwinkelkeur extends Controller {
             'tooltip'          => true,
             'javascript'       => true,
             'rich_snippet'     => false,
-        ), $settings);
+        ), $data);
+    }
+
+    private function cleanSettings($data) {
+        if(!is_array($data)) $data = array();
+        $data = $this->defaultSettings($data);
+        return array(
+            'shop_id'          => trim($data['shop_id']),
+            'api_key'          => trim($data['api_key']),
+            'sidebar'          => !!$data['sidebar'],
+            'sidebar_position' => $data['sidebar_position'],
+            'sidebar_top'      => $data['sidebar_top'],
+            'invite'           => (int) $data['invite'],
+            'invite_delay'     => (int) $data['invite_delay'],
+            'tooltip'          => !!$data['tooltip'],
+            'javascript'       => !!$data['javascript'],
+            'rich_snippet'     => !!$data['rich_snippet'],
+        );
     }
     
     private function editSettings(array $settings = array()) {

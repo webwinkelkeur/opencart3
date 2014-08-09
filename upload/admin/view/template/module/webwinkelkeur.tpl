@@ -10,31 +10,62 @@
   <div class="warning"><?php echo $error_message; ?></div>
   <?php endforeach; ?>
   <?php } ?>
-  <div class="box">
-    <div class="heading">
-      <h1><img src="view/image/information.png" alt="" /> WebwinkelKeur</h1>
-      <div class="buttons"><a onclick="$('#form').submit();" class="button">Opslaan</a><a href="<?php echo $cancel; ?>" class="button">Annuleren</a></div>
-    </div>
-    <div class="content">
-      <form action="" method="post" enctype="multipart/form-data" id="form">
+  <form action="" method="post" enctype="multipart/form-data" id="form" name="webwinkelkeur">
+    <div class="box">
+      <div class="heading">
+        <h1><img src="view/image/information.png" alt="" /> WebwinkelKeur</h1>
+        <div class="buttons"><a onclick="$('#form').submit();" class="button">Opslaan</a><a href="<?php echo $cancel; ?>" class="button">Annuleren</a></div>
+      </div>
+      <div class="content" style="min-height:0;">
         <table class="form">
+          <?php if($stores): ?>
+          <tr>
+            <td>Multi-store:</td>
+            <td>
+              <label>
+                <input type="radio" name="multistore" value="0" <?php if(!$multistore) echo "checked"; ?> onchange="document.forms.webwinkelkeur.submit();" />
+                Gebruik dezelfde instellingen voor elke winkel
+              </label><br />
+              <label>
+                <input type="radio" name="multistore" value="1" <?php if($multistore) echo "checked"; ?> onchange="document.forms.webwinkelkeur.submit();" />
+                Configureer de module voor elke winkel
+              </label>
+            </td>
+          </tr>
+          <?php endif; ?>
+          <?php foreach($view_stores as $store): ?>
+          <?php if($multistore): ?>
+        </table>
+      </div>
+    </div>
+    <div class="box">
+      <div class="heading">
+        <h1><?php echo $store['name']; ?></h1>
+        <div class="buttons"><a onclick="$('#form').submit();" class="button">Opslaan</a><a href="<?php echo $cancel; ?>" class="button">Annuleren</a></div>
+      </div>
+      <div class="content">
+        <?php if($store['store_id']): ?>
+        <input type="hidden" name="store[<?php echo $store['store_id']; ?>][store_name]" value="<?php echo $store['name']; ?>" />
+        <?php endif; ?>
+        <table class="form">
+          <?php endif; ?>
           <tr>
             <td><span class="required">*</span> Webwinkel ID:</td>
-            <td><input type="text" name="shop_id" value="<?php echo $shop_id; ?>" /></td>
+            <td><input type="text" name="<?php printf($store['field_name'], 'shop_id'); ?>" value="<?php echo $store['settings']['shop_id']; ?>" /></td>
           </tr>
           <tr>
             <td><span class="required">*</span> API key:</td>
-            <td><input type="text" name="api_key" value="<?php echo $api_key; ?>" /></td>
+            <td><input type="text" name="<?php printf($store['field_name'], 'api_key'); ?>" value="<?php echo $store['settings']['api_key']; ?>" /></td>
           </tr>
           <tr>
             <td>Sidebar weergeven:</td>
             <td>
               <label>
-                <input type="radio" name="sidebar" value="1" <?php if($sidebar) echo "checked"; ?> />
+                <input type="radio" name="<?php printf($store['field_name'], 'sidebar'); ?>" value="1" <?php if($store['settings']['sidebar']) echo "checked"; ?> />
                 Ja
               </label>
               <label>
-                <input type="radio" name="sidebar" value="0" <?php if(!$sidebar) echo "checked"; ?> />
+                <input type="radio" name="<?php printf($store['field_name'], 'sidebar'); ?>" value="0" <?php if(!$store['settings']['sidebar']) echo "checked"; ?> />
                 Nee
               </label>
             </td>
@@ -43,11 +74,11 @@
             <td>Sidebar positie:</td>
             <td>
               <label>
-                <input type="radio" name="sidebar_position" value="left" <?php if($sidebar_position == 'left') echo "checked"; ?> />
+                <input type="radio" name="<?php printf($store['field_name'], 'sidebar_position'); ?>" value="left" <?php if($store['settings']['sidebar_position'] == 'left') echo "checked"; ?> />
                 Links
               </label>
               <label>
-                <input type="radio" name="sidebar_position" value="right" <?php if($sidebar_position == 'right') echo "checked"; ?> />
+                <input type="radio" name="<?php printf($store['field_name'], 'sidebar_position'); ?>" value="right" <?php if($store['settings']['sidebar_position'] == 'right') echo "checked"; ?> />
                 Rechts
               </label>
             </td>
@@ -57,7 +88,7 @@
               Sidebar hoogte:<br/>
               <span class="help">aantal pixels vanaf de bovenkant</span>
             </td>
-            <td><input type="text" name="sidebar_top" size="2" value="<?php echo $sidebar_top; ?>" /></td>
+            <td><input type="text" name="<?php printf($store['field_name'], 'sidebar_top'); ?>" size="2" value="<?php echo $store['settings']['sidebar_top']; ?>" /></td>
           </tr>
           <tr>
             <td>
@@ -66,15 +97,15 @@
             </td>
             <td>
               <label>
-                <input type="radio" name="invite" value="1" <?php if($invite == 1) echo "checked"; ?> />
+                <input type="radio" name="<?php printf($store['field_name'], 'invite'); ?>" value="1" <?php if($store['settings']['invite'] == 1) echo "checked"; ?> />
                 Ja, na elke bestelling
               </label><br />
               <label>
-                <input type="radio" name="invite" value="2" <?php if($invite == 2) echo "checked"; ?> />
+                <input type="radio" name="<?php printf($store['field_name'], 'invite'); ?>" value="2" <?php if($store['settings']['invite'] == 2) echo "checked"; ?> />
                 Ja, alleen bij de eerste bestelling
               </label><br />
               <label>
-                <input type="radio" name="invite" value="0" <?php if(!$invite) echo "checked"; ?> />
+                <input type="radio" name="<?php printf($store['field_name'], 'invite'); ?>" value="0" <?php if(!$store['settings']['invite']) echo "checked"; ?> />
                 Nee, geen uitnodigingen versturen
               </label>
             </td>
@@ -84,17 +115,17 @@
               Wachttijd voor uitnodiging:<br/>
               <span class="help">de uitnodiging wordt verstuurd nadat het opgegeven aantal dagen is verstreken</span>
             </td>
-            <td><input type="text" name="invite_delay" size="2" value="<?php echo $invite_delay; ?>" /></td>
+            <td><input type="text" name="<?php printf($store['field_name'], 'invite_delay'); ?>" size="2" value="<?php echo $store['settings']['invite_delay']; ?>" /></td>
           </tr>
           <tr>
             <td>Tooltip weergeven:</td>
             <td>
               <label>
-                <input type="radio" name="tooltip" value="1" <?php if($tooltip) echo "checked"; ?> />
+                <input type="radio" name="<?php printf($store['field_name'], 'tooltip'); ?>" value="1" <?php if($store['settings']['tooltip']) echo "checked"; ?> />
                 Ja
               </label>
               <label>
-                <input type="radio" name="tooltip" value="0" <?php if(!$tooltip) echo "checked"; ?> />
+                <input type="radio" name="<?php printf($store['field_name'], 'tooltip'); ?>" value="0" <?php if(!$store['settings']['tooltip']) echo "checked"; ?> />
                 Nee
               </label>
             </td>
@@ -103,11 +134,11 @@
             <td>JavaScript-integratie:</td>
             <td>
               <label>
-                <input type="radio" name="javascript" value="1" <?php if($javascript) echo "checked"; ?> />
+                <input type="radio" name="<?php printf($store['field_name'], 'javascript'); ?>" value="1" <?php if($store['settings']['javascript']) echo "checked"; ?> />
                 Ja
               </label>
               <label>
-                <input type="radio" name="javascript" value="0" <?php if(!$javascript) echo "checked"; ?> />
+                <input type="radio" name="<?php printf($store['field_name'], 'javascript'); ?>" value="0" <?php if(!$store['settings']['javascript']) echo "checked"; ?> />
                 Nee
               </label>
             </td>
@@ -119,19 +150,20 @@
             </td>
             <td>
               <label>
-                <input type="radio" name="rich_snippet" value="1" <?php if($rich_snippet) echo "checked"; ?> />
+                <input type="radio" name="<?php printf($store['field_name'], 'rich_snippet'); ?>" value="1" <?php if($store['settings']['rich_snippet']) echo "checked"; ?> />
                 Ja
               </label>
               <label>
-                <input type="radio" name="rich_snippet" value="0" <?php if(!$rich_snippet) echo "checked"; ?> />
+                <input type="radio" name="<?php printf($store['field_name'], 'rich_snippet'); ?>" value="0" <?php if(!$store['settings']['rich_snippet']) echo "checked"; ?> />
                 Nee
               </label>
             </td>
           </tr>
+          <?php endforeach; ?>
         </table>
-      </form>
+      </div>
     </div>
-  </div>
+  </form>
   <?php if($invite_errors): ?>
   <div class="box">
     <div class="heading">
