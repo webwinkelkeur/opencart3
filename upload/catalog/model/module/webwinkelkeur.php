@@ -1,22 +1,31 @@
 <?php
 require_once DIR_SYSTEM . 'library/Peschar_URLRetriever.php';
 class ModelModuleWebwinkelkeur extends Model {
-    public function getOrdersToInvite() {
+    private function getOrdersToInvite($settings) {
         $max_time = time() - 1800;
 
-        if($this->getMultistore())
-            $where = 'store_id = ' . (int) $this->config->get('config_store_id');
-        else
-            $where = '1';
+        $where = array();
 
-        $query = $this->db->query("
+        if($this->getMultistore())
+            $where[] = 'store_id = ' . (int) $this->config->get('config_store_id');
+
+        if(empty($settings['order_statuses']))
+            $where[] = '0';
+        else
+            $where[] = 'order_status_id IN (' . implode(',', array_map('intval', $settings['order_statuses'])) . ')';
+
+        if(empty($where))
+            $where = '0';
+        else
+            $where = implode(' AND ', $where);
+
+        $query = $this->db->query($q="
             SELECT *
             FROM `" . DB_PREFIX . "order`
             WHERE
                 webwinkelkeur_invite_sent = 0
                 AND webwinkelkeur_invite_tries < 10
                 AND webwinkelkeur_invite_time < $max_time
-                AND order_status_id IN (3, 5)
                 AND $where
         ");
 
@@ -32,7 +41,7 @@ class ModelModuleWebwinkelkeur extends Model {
         )
             continue;
 
-        foreach($this->getOrdersToInvite() as $order) {
+        foreach($this->getOrdersToInvite($settings) as $order) {
             $this->db->query("
                 UPDATE `" . DB_PREFIX . "order`
                 SET

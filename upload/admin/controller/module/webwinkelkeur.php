@@ -69,8 +69,11 @@ class ControllerModuleWebwinkelkeur extends Controller {
             $store['field_name'] = $store['store_id'] ? "store[{$store['store_id']}][%s]" : "%s";
         }
 
-        foreach($settings as $key => $value)
-            $this->data[$key] = $value;
+        $this->load->model('localisation/order_status');
+
+        $this->data['order_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
+
+        $this->data['multistore'] = $settings['multistore'];
 
         $this->data['invite_errors'] = $this->model_module_webwinkelkeur->getInviteErrors();
 
@@ -153,11 +156,13 @@ class ControllerModuleWebwinkelkeur extends Controller {
             'tooltip'          => true,
             'javascript'       => true,
             'rich_snippet'     => false,
+            'order_statuses'   => array(3, 5),
         ), $data);
     }
 
     private function cleanSettings($data) {
         if(!is_array($data)) $data = array();
+        $data = array_merge(array('order_statuses' => array()), $data);
         $data = $this->defaultSettings($data);
         return array(
             'shop_id'          => trim($data['shop_id']),
@@ -170,7 +175,20 @@ class ControllerModuleWebwinkelkeur extends Controller {
             'tooltip'          => !!$data['tooltip'],
             'javascript'       => !!$data['javascript'],
             'rich_snippet'     => !!$data['rich_snippet'],
+            'order_statuses'   => empty($data['order_statuses']) ? array() : $this->cleanIntegerArray($data['order_statuses']),
         );
+    }
+
+    private function cleanIntegerArray($array) {
+        if(!is_array($array))
+            return array();
+        $new = array();
+        foreach($array as $value)
+            if((is_string($value) && ctype_digit($value))
+               || is_integer($value) || is_float($value)
+            )
+                $new[] = (int) $value;
+        return $new;
     }
     
     private function editSettings(array $settings = array()) {

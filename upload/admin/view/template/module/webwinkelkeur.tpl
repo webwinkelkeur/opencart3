@@ -118,6 +118,21 @@
             <td><input type="text" name="<?php printf($store['field_name'], 'invite_delay'); ?>" size="2" value="<?php echo $store['settings']['invite_delay']; ?>" /></td>
           </tr>
           <tr>
+            <td>
+              Orderstatus voor uitnodiging:<br />
+              <span class="help">de uitnodiging wordt alleen verstuurd wanneer de bestelling de aangevinkte status heeft</span>
+            </td>
+            <td class="webwinkelkeur-order-statuses">
+              <?php foreach($order_statuses as $order_status): ?>
+              <label style="display:block;width:200px;overflow:hidden;float:left;">
+                <input type="checkbox" name="<?php printf($store['field_name'], 'order_statuses'); ?>[]" value="<?php echo $order_status['order_status_id']; ?>" <?php if(in_array($order_status['order_status_id'], $store['settings']['order_statuses'])) echo 'checked'; ?> />
+                <?php echo $order_status['name']; ?>
+              </label>
+              <?php endforeach; ?>
+              <div style="clear:both;"></div>
+            </td>
+          </tr>
+          <tr>
             <td>Tooltip weergeven:</td>
             <td>
               <label>
@@ -188,5 +203,14 @@
   </div>
   <?php endif; ?>
 </div>
+<script>
+jQuery(function($) {
+    var $container = $('.webwinkelkeur-order-statuses');
+    $container.find('label:has(input:checked)').css('font-weight', 'bold');
+    $container.find('input').change(function() {
+        this.parentNode.style.fontWeight = this.checked ? 'bold' : 'normal';
+    });
+});
+</script>
 <?php echo $footer; ?>
 <?php // vim: set sw=2 sts=2 et ft=php :
