@@ -31,3 +31,6 @@ Installatieinstructies
 
       30 23 * * * wget --quiet -O- 'http://www.uw-webwinkel.nl/index.php?route=module/webwinkelkeur/cron'
 
+    Wanneer u de multistore ondersteuning gebruikt, dan moet de cronjob voor
+    elke winkel worden ingesteld.
+
