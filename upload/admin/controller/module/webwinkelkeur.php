@@ -87,6 +87,9 @@ class ControllerModuleWebwinkelkeur extends Controller {
     }
 
     private function validateForm() {
+        if(!isset($this->request->post['multistore']))
+            $this->request->post['multistore'] = false;
+
         if($this->request->post['multistore'])
             $default = $this->config->get('config_name') . ': ';
         else
