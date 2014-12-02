@@ -3,11 +3,15 @@ class ControllerModuleWebwinkelkeur extends Controller {
     public function index() {
         $this->language->load('common/header');
 
+        $this->language->load('module/account');
+
         $this->load->model('module/webwinkelkeur');
 
         $this->document->setTitle('WebwinkelKeur');
 
-        $this->data['error_warning'] = array();
+        $data = array();
+
+        $data['error_warning'] = array();
 
         $settings = $this->getSettings();
 
@@ -28,38 +32,43 @@ class ControllerModuleWebwinkelkeur extends Controller {
             if(!$validated)
                 $settings = $this->getSettings();
             elseif($new_settings['multistore'] != $settings['multistore'])
-                $this->redirect($this->url->link('module/webwinkelkeur', 'token=' . $this->session->data['token'], 'SSL'));
+                $this->response->redirect($this->url->link('module/webwinkelkeur', 'token=' . $this->session->data['token'], 'SSL'));
             else
-                $this->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
+                $this->response->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
         }
 
-  		$this->data['breadcrumbs'] = array();
+  		$data['breadcrumbs'] = array();
 
-   		$this->data['breadcrumbs'][] = array(
+        $data['breadcrumbs'][] = array(
+            'text' => $this->language->get('text_home'),
+            'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], 'ssl'),
+        );
+
+   		$data['breadcrumbs'][] = array(
        		'text'      => $this->language->get('text_module'),
 			'href'      => $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'ssl'),
       		'separator' => false
    		);
 
-   		$this->data['breadcrumbs'][] = array(
+   		$data['breadcrumbs'][] = array(
        		'text'      => 'WebwinkelKeur',
 			'href'      => $this->url->link('module/webwinkelkeur', 'token=' . $this->session->data['token'], 'ssl'),
       		'separator' => ' :: '
    		);
 
-        $this->data['cancel'] = $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'ssl');
+        $data['cancel'] = $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'ssl');
 
-        $this->data['stores'] = $stores;
+        $data['stores'] = $stores;
 
-        $this->data['view_stores'] = array(array(
+        $data['view_stores'] = array(array(
             'store_id' => 0,
             'name'     => $this->config->get('config_name'),
         ));
 
         if($settings['multistore'])
-            $this->data['view_stores'] = array_merge($this->data['view_stores'], $this->data['stores']);
+            $data['view_stores'] = array_merge($data['view_stores'], $data['stores']);
 
-        foreach($this->data['view_stores'] as &$store) {
+        foreach($data['view_stores'] as &$store) {
             if($store['store_id'] && isset($settings['store'][$store['store_id']]))
                 $store['settings'] = $settings['store'][$store['store_id']];
             elseif($store['store_id'])
@@ -71,19 +80,15 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
         $this->load->model('localisation/order_status');
 
-        $this->data['order_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
+        $data['order_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
 
-        $this->data['multistore'] = $settings['multistore'];
+        $data['multistore'] = $settings['multistore'];
 
-        $this->data['invite_errors'] = $this->model_module_webwinkelkeur->getInviteErrors();
+        $data['invite_errors'] = $this->model_module_webwinkelkeur->getInviteErrors();
 
-		$this->template = 'module/webwinkelkeur.tpl';
-		$this->children = array(
-			'common/header',
-			'common/footer'
-		);
-				
-		$this->response->setOutput($this->render());
+        $data['header'] = $this->load->controller('common/header') . $this->load->controller('common/column_left');
+        $data['footer'] = $this->load->controller('common/footer');
+        $this->response->setOutput($this->load->view('module/webwinkelkeur.tpl', $data));
     }
 
     private function validateForm() {
@@ -136,8 +141,8 @@ class ControllerModuleWebwinkelkeur extends Controller {
     }
 
     private function getSettings() {
-        $this->load->model('module/webwinkelkeur');
-        $settings = $this->model_module_webwinkelkeur->getSetting('webwinkelkeur');
+        $this->load->model('setting/setting');
+        $settings = $this->model_setting_setting->getSetting('webwinkelkeur');
         return array_merge(
             array('multistore' => false),
             $this->defaultSettings($settings)

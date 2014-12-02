@@ -77,7 +77,7 @@ class ModelModuleWebwinkelkeur extends Model {
     public function getSettings() {
         $this->load->model('setting/setting');
 
-        $settings = $this->getSetting('webwinkelkeur');
+        $settings = $this->model_setting_setting->getSetting('webwinkelkeur');
 
         if(!empty($settings['multistore'])
            && ($store_id = $this->config->get('config_store_id'))
@@ -96,21 +96,5 @@ class ModelModuleWebwinkelkeur extends Model {
         $settings = $this->getSetting('webwinkelkeur');
 
         return !empty($settings['multistore']);
-    }
-
-    public function getSetting($group, $store_id = 0) {
-        $data = array(); 
-        
-        $query = $this->db->query("SELECT * FROM " . DB_PREFIX . "setting WHERE store_id = '" . (int)$store_id . "' AND `group` = '" . $this->db->escape($group) . "'");
-        
-        foreach ($query->rows as $result) {
-            if (!$result['serialized']) {
-                $data[$result['key']] = $result['value'];
-            } else {
-                $data[$result['key']] = unserialize($result['value']);
-            }
-        }
-
-        return $data;
     }
 }
