@@ -1,5 +1,7 @@
 <?php
 class ControllerModuleWebwinkelkeur extends Controller {
+    private $error = array();
+
     public function index() {
         $this->language->load('common/header');
 
@@ -36,6 +38,16 @@ class ControllerModuleWebwinkelkeur extends Controller {
             else
                 $this->response->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
         }
+
+        if(isset($this->error['shopid']))
+            $data['error_shopid'] = $this->error['shopid'];
+        else
+            $data['error_shopid'] = '';
+
+        if(isset($this->error['apikey']))
+            $data['error_apikey'] = $this->error['apikey'];
+        else
+            $data['error_apikey'] = '';
 
   		$data['breadcrumbs'] = array();
 
@@ -103,30 +115,25 @@ class ControllerModuleWebwinkelkeur extends Controller {
         else
             $default = '';
 
-        foreach($this->validateSettings($this->request->post) as $error)
-            $this->data['error_warning'][] = $default . $error;
-
         if($this->request->post['multistore'] && !empty($this->request->post['store']))
             foreach($this->request->post['store'] as $store)
                 foreach($this->validateSettings($store) as $error)
                     $this->data['error_warning'][] = $store['store_name'] . ': ' . $error;
 
-        return empty($this->data['error_warning']);
+        return $this->validateSettings($this->request->post);
     }
 
     private function validateSettings(array &$data) {
         $data['shop_id'] = trim($data['shop_id']);
         $data['api_key'] = trim($data['api_key']);
 
-        $errors = array();
-
         if(!empty($data['shop_id']) && !ctype_digit($data['shop_id']))
-            $errors[] = 'Uw webwinkel ID mag alleen cijfers bevatten.';
+            $this->error['shopid'] = 'Uw webwinkel ID mag alleen cijfers bevatten.';
 
         if($data['invite'] && !$data['api_key'])
-            $errors[] = 'Vul uw API key in.';
+            $this->error['apikey'] = 'Vul uw API key in.';
 
-        return $errors;
+        return !$this->error;
     }
 
     public function install() {
