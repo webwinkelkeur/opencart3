@@ -20,6 +20,17 @@ class ControllerModuleWebwinkelkeur extends Controller {
         $stores = $this->model_module_webwinkelkeur->getStores();
 
 		if($this->request->server['REQUEST_METHOD'] == 'POST') {
+            if($this->request->post['selectStore']) {
+                $module_id = $this->findModule($this->request->post['store_id']);
+
+                if(is_null($module_id)) {
+                    $this->createModule($this->request->post);
+                    $module_id = $this->findModule($this->request->post['store_id']);
+                }
+                $this->response->redirect($this->url->link('module/webwinkelkeur',
+                        'token=' . $this->session->data['token'] . '&module_id=' . $module_id, 'SSL'));
+            }
+
             $validated = $this->validateForm();
 
             $new_settings = $this->cleanSettings($this->request->post);
@@ -151,6 +162,13 @@ class ControllerModuleWebwinkelkeur extends Controller {
     }
 
     private function getSettings() {
+        $this->load->model('extension/module');
+        if(isset($this->request->get['module_id'])) {
+            $settings = array();
+            $settings = $this->model_extension_module->getModule($this->request->get['module_id']);
+            return $this->defaultSettings($settings);
+        }
+
         $this->load->model('setting/setting');
         $wwk_settings = $this->model_setting_setting->getSetting('webwinkelkeur');
 
@@ -196,6 +214,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
             'sidebar_top'      => $data['sidebar_top'],
             'invite'           => (int) $data['invite'],
             'invite_delay'     => (int) $data['invite_delay'],
+            'store_id'         => (int) $data['store_id'],
             'tooltip'          => !!$data['tooltip'],
             'javascript'       => !!$data['javascript'],
             'rich_snippet'     => !!$data['rich_snippet'],
@@ -250,6 +269,12 @@ class ControllerModuleWebwinkelkeur extends Controller {
         // to add it for every layout manually.
         $this->editLayouts();
 
+        $this->load->model('extension/module');
+        if(isset($this->request->get['module_id'])) {
+            $this->model_extension_module->editModule($this->request->get['module_id'], $settings);
+            return;
+        }
+
         $this->load->model('setting/setting');
 
         $wwk_settings = array();
@@ -258,5 +283,28 @@ class ControllerModuleWebwinkelkeur extends Controller {
         }
 
         $this->model_setting_setting->editSetting('webwinkelkeur', $wwk_settings);
+    }
+
+    private function findModule($store) {
+        if($store === 0) return 0;
+        $this->load->model('extension/module');
+
+        foreach($this->model_extension_module->getModulesByCode('webwinkelkeur') as $module) {
+            $data = $this->model_extension_module->getModule($module['module_id']);
+            if($data['store_id'] == $store)
+                return $module['module_id'];
+        }
+        return null;
+    }
+
+    private function createModule($settings) {
+        $this->load->model('extension/module');
+
+        $data = $this->defaultSettings();
+        $module_settings = array_merge($data, array(
+            'store_id'  => $settings['store_id'],
+        ));
+
+        $this->model_extension_module->addModule('webwinkelkeur', $module_settings);
     }
 }

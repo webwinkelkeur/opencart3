@@ -22,6 +22,24 @@
   </div>
   <div class="container-fluid">
     <form action="" method="post" enctype="multipart/form-data" class="form-horizontal" id="form" name="webwinkelkeur">
+      <div class="panel panel-default">
+        <div class="panel-heading">
+          <h3 class="panel-title"><i class="fa fa-pencil"></i>Edit WebwinkelKeur Module</h3>
+        </div>
+        <div class="panel-body">
+          <div class="form-group">
+            <label class="col-sm-2 control-label">Store</label>
+            <div class="col-sm-10">
+              <input type="hidden" id="redirStore" name="selectStore" />
+              <select class="form-control" name="store_id" onchange="switchStore();">
+              <?php foreach($stores as $store): ?>
+                <option value="<?php echo $store['store_id'] ?>"><?php echo $store['name'] ?></option>
+              <?php endforeach; ?>
+              </select>
+            </div>
+          </div>
+        </div>
+      </div>
       <?php foreach($view_stores as $store): ?>
       <div class="panel panel-default">
         <div class="panel-heading">
@@ -232,6 +250,10 @@ jQuery(function($) {
         this.parentNode.style.fontWeight = this.checked ? 'bold' : 'normal';
     });
 });
+function switchStore() {
+  $('#redirStore').val(true);
+  $('#form').submit();
+}
 </script>
 <?php echo $footer; ?>
 <?php // vim: set sw=2 sts=2 et ft=php :
