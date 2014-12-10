@@ -99,7 +99,7 @@ class ModelModuleWebwinkelkeur extends Model {
     public function getMultistore() {
         $this->load->model('setting/setting');
 
-        $settings = $this->getSetting('webwinkelkeur');
+        $settings = $this->getSettings('webwinkelkeur');
 
         return !empty($settings['multistore']);
     }
