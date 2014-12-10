@@ -77,7 +77,13 @@ class ModelModuleWebwinkelkeur extends Model {
     public function getSettings() {
         $this->load->model('setting/setting');
 
-        $settings = $this->model_setting_setting->getSetting('webwinkelkeur');
+        $wwk_settings = $this->model_setting_setting->getSetting('webwinkelkeur');
+
+        $settings = array();
+        foreach($wwk_settings as $key => $value) {
+            preg_match('~^webwinkelkeur_(.*)$~', $key, $name);
+            $settings[$name[1]] = $value;
+        }
 
         if(!empty($settings['multistore'])
            && ($store_id = $this->config->get('config_store_id'))

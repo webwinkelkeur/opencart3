@@ -142,7 +142,14 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
     private function getSettings() {
         $this->load->model('setting/setting');
-        $settings = $this->model_setting_setting->getSetting('webwinkelkeur');
+        $wwk_settings = $this->model_setting_setting->getSetting('webwinkelkeur');
+
+        $settings = array();
+        foreach($wwk_settings as $key => $value) {
+            preg_match('~^webwinkelkeur_(.*)$~', $key, $name);
+            $settings[$name[1]] = $value;
+        }
+
         return array_merge(
             array('multistore' => false),
             $this->defaultSettings($settings)
@@ -201,6 +208,13 @@ class ControllerModuleWebwinkelkeur extends Controller {
         $this->load->model('setting/setting');
         $this->load->model('design/layout');
 
+        $wwk_settings = array();
+        foreach($settings as $key => $value) {
+            $wwk_settings["webwinkelkeur_${key}"] = $value;
+        }
+
+        $this->model_setting_setting->editSetting('webwinkelkeur', $wwk_settings);
+
         $settings = array_merge($settings, array(
             'webwinkelkeur_module' => array(),
         ));
@@ -216,7 +230,5 @@ class ControllerModuleWebwinkelkeur extends Controller {
                 'sort_order'    => 0,
             );
         }
-
-        $this->model_setting_setting->editSetting('webwinkelkeur', $settings);
     }
 }
