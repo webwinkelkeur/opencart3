@@ -215,10 +215,42 @@ class ControllerModuleWebwinkelkeur extends Controller {
                 $new[] = (int) $value;
         return $new;
     }
-    
-    private function editSettings(array $settings = array()) {
-        $this->load->model('setting/setting');
+
+    private function editLayouts() {
         $this->load->model('design/layout');
+
+        $layouts = $this->model_design_layout->getLayouts();
+        foreach($layouts as $layout) {
+            $found = false;
+            $layout_module = $this->model_design_layout->getLayoutModules($layout['layout_id']);
+            foreach($layout_module as $module) {
+                if($module['code'] == 'webwinkelkeur')
+                    $found = true;
+            }
+            if($found) continue;
+
+            $layout_module[] = array(
+                'code'       => 'webwinkelkeur',
+                'position'   => 'content_bottom',
+                'sort_order' => 0,
+            );
+
+            $new_layout = array(
+                'name'           => $layout['name'],
+                'layout_route'   => $this->model_design_layout->getLayoutRoutes($layout['layout_id']),
+                'layout_module'  => $layout_module,
+            );
+
+            $this->model_design_layout->editLayout($layout['layout_id'], $new_layout);
+        }
+    }
+
+    private function editSettings(array $settings = array()) {
+        // We want to execute our module on every page. This is why we have
+        // to add it for every layout manually.
+        $this->editLayouts();
+
+        $this->load->model('setting/setting');
 
         $wwk_settings = array();
         foreach($settings as $key => $value) {
@@ -226,20 +258,5 @@ class ControllerModuleWebwinkelkeur extends Controller {
         }
 
         $this->model_setting_setting->editSetting('webwinkelkeur', $wwk_settings);
-
-        $settings = array_merge($settings, array(
-            'webwinkelkeur_module' => array(),
-        ));
-
-        // We want to execute our module on every page. This is why we have
-        // to add it for every layout manually.
-        $layouts = $this->model_design_layout->getLayouts();
-        foreach($layouts as $layout) {
-            $settings['webwinkelkeur_module'][] = array(
-                'layout_id'     => $layout['layout_id'],
-                'position'      => 'content_bottom',
-                'sort_order'    => 0,
-            );
-        }
     }
 }
