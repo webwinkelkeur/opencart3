@@ -49,10 +49,6 @@
           <h3 class="panel-title"><i class="fa fa-pencil"></i> <?php echo $store['name']; ?></h3>
         </div>
         <div class="panel-body">
-          <?php if($store['store_id']): ?>
-          <input type="hidden" name="store[<?php echo $store['store_id']; ?>][store_name]"
-                 value="<?php echo $store['name']; ?>" />
-          <?php endif; ?>
           <div class="form-group required">
             <label class="col-sm-2 control-label">Webwinkel ID</label>
             <div class="col-sm-10">
