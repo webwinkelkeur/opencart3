@@ -84,8 +84,6 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
         $data['order_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
 
-        $data['multistore'] = $settings['multistore'];
-
         $data['invite_errors'] = $this->model_module_webwinkelkeur->getInviteErrors();
 
         $data['header'] = $this->load->controller('common/header') . $this->load->controller('common/column_left');
@@ -141,10 +139,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
             $settings[$name[1]] = $value;
         }
 
-        return array_merge(
-            array('multistore' => false),
-            $this->defaultSettings($settings)
-        );
+        return $this->defaultSettings($settings);
     }
 
     private function defaultSettings($data = array()) {
