@@ -236,20 +236,36 @@ class ControllerModuleWebwinkelkeur extends Controller {
     }
 
     private function editLayouts() {
+        $this->load->model('extension/module');
+
+        $module_id = null;
+        if(isset($this->request->get['module_id'])) {
+            $module_id = $this->request->get['module_id'];
+        } else {
+            $modules = $this->model_extension_module->getModulesByCode('webwinkelkeur');
+            if(!empty($modules)) {
+                $module_id = $modules[0]['module_id'];
+            }
+        }
+
+        $module_code = 'webwinkelkeur';
+        if(!is_null($module_id))
+            $module_code = $module_code . '.' . $module_id;
+
         $this->load->model('design/layout');
 
         $layouts = $this->model_design_layout->getLayouts();
         foreach($layouts as $layout) {
-            $found = false;
             $layout_module = $this->model_design_layout->getLayoutModules($layout['layout_id']);
-            foreach($layout_module as $module) {
-                if($module['code'] == 'webwinkelkeur')
-                    $found = true;
-            }
-            if($found) continue;
+            foreach($layout_module as $index => $module) {
+                if($module['code'] === $module_code)
+                    continue 2;
 
+                if(strstr($module['code'], 'webwinkelkeur'))
+                    unset($layout_module[$index]);
+            }
             $layout_module[] = array(
-                'code'       => 'webwinkelkeur',
+                'code'       => $module_code,
                 'position'   => 'content_bottom',
                 'sort_order' => 0,
             );
