@@ -21,6 +21,9 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
 		if($this->request->server['REQUEST_METHOD'] == 'POST') {
             if($this->request->post['selectStore']) {
+                if($this->request->post['store_id'] == 0)
+                    $this->response->redirect($this->url->link('module/webwinkelkeur', 'token=' . $this->session->data['token'], 'SSL'));
+
                 $module_id = $this->findModule($this->request->post['store_id']);
 
                 if(is_null($module_id)) {
