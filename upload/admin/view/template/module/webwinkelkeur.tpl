@@ -34,7 +34,7 @@
               <select class="form-control" name="store_id" onchange="switchStore();">
               <?php foreach($stores as $store): ?>
                 <option value="<?php echo $store['store_id'] ?>"
-                        <?php if($store['store_id'] == $view_stores[0]['store_id']) echo "selected"; ?> >
+                        <?php if($store['store_id'] == $view_stores[0]['settings']['store_id']) echo "selected"; ?> >
                   <?php echo $store['name'] ?>
                 </option>
               <?php endforeach; ?>

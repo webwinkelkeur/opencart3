@@ -32,7 +32,10 @@ class ControllerModuleWebwinkelkeur extends Controller {
             }
 
             if($this->validateForm()) {
-                $new_settings = $this->cleanSettings($this->request->post['store']);
+                $form_data = $this->request->post['store'];
+                $form_data['store_id'] = $this->request->post['store_id'];
+
+                $new_settings = $this->cleanSettings($form_data);
                 $this->editSettings($new_settings);
                 $this->response->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
             }
@@ -75,7 +78,6 @@ class ControllerModuleWebwinkelkeur extends Controller {
         $data['stores'] = $stores;
 
         $data['view_stores'] = array(array(
-            'store_id' => 0,
             'name'     => $this->config->get('config_name'),
             'settings' => $settings,
         ));
@@ -150,6 +152,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
             'sidebar'          => true,
             'sidebar_position' => 'left',
             'sidebar_top'      => '',
+            'store_id'         => 0,
             'invite'           => 0,
             'invite_delay'     => 7,
             'tooltip'          => true,
