@@ -24,11 +24,11 @@
     <form action="" method="post" enctype="multipart/form-data" class="form-horizontal" id="form" name="webwinkelkeur">
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title"><i class="fa fa-pencil"></i>Edit WebwinkelKeur Module</h3>
+          <h3 class="panel-title"><i class="fa fa-pencil"></i>Selecteer Webwinkel</h3>
         </div>
         <div class="panel-body">
           <div class="form-group">
-            <label class="col-sm-2 control-label">Store</label>
+            <label class="col-sm-2 control-label">Actieve Webwinkel</label>
             <div class="col-sm-10">
               <input type="hidden" id="redirStore" name="selectStore" />
               <select class="form-control" name="store_id" onchange="switchStore();">
@@ -46,7 +46,7 @@
       <?php foreach($view_stores as $store): ?>
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title"><i class="fa fa-pencil"></i> <?php echo $store['name']; ?></h3>
+          <h3 class="panel-title"><i class="fa fa-pencil"></i>Instellingen</h3>
         </div>
         <div class="panel-body">
           <div class="form-group required">
