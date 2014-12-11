@@ -31,23 +31,11 @@ class ControllerModuleWebwinkelkeur extends Controller {
                         'token=' . $this->session->data['token'] . '&module_id=' . $module_id, 'SSL'));
             }
 
-            $validated = $this->validateForm();
-
-            $new_settings = $this->cleanSettings($this->request->post);
-            $new_settings['multistore'] = !!$this->request->post['multistore'];
-
-            if($new_settings['multistore'])
-                foreach($stores as $store)
-                    $new_settings['store'][$store['store_id']] = isset($this->request->post['store'][$store['store_id']]) ? $this->cleanSettings($this->request->post['store'][$store['store_id']]) : $this->defaultSettings();
-
-            $this->editSettings($new_settings);
-
-            if(!$validated)
-                $settings = $this->getSettings();
-            elseif($new_settings['multistore'] != $settings['multistore'])
-                $this->response->redirect($this->url->link('module/webwinkelkeur', 'token=' . $this->session->data['token'], 'SSL'));
-            else
+            if($this->validateForm()) {
+                $new_settings = $this->cleanSettings($this->request->post['store']);
+                $this->editSettings($new_settings);
                 $this->response->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
+            }
         }
 
         if(isset($this->error['shopid']))
@@ -118,20 +106,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
     }
 
     private function validateForm() {
-        if(!isset($this->request->post['multistore']))
-            $this->request->post['multistore'] = false;
-
-        if($this->request->post['multistore'])
-            $default = $this->config->get('config_name') . ': ';
-        else
-            $default = '';
-
-        if($this->request->post['multistore'] && !empty($this->request->post['store']))
-            foreach($this->request->post['store'] as $store)
-                foreach($this->validateSettings($store) as $error)
-                    $this->data['error_warning'][] = $store['store_name'] . ': ' . $error;
-
-        return $this->validateSettings($this->request->post);
+        return $this->validateSettings($this->request->post['store']);
     }
 
     private function validateSettings(array &$data) {
