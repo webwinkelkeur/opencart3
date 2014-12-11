@@ -77,6 +77,15 @@ class ModelModuleWebwinkelkeur extends Model {
     public function getSettings() {
         $this->load->model('setting/setting');
 
+        $store_id = $this->config->get('config_store_id');
+
+        $this->load->model('extension/module');
+        foreach($this->getModulesByCode('webwinkelkeur') as $module) {
+            $data = $this->model_extension_module->getModule($module['module_id']);
+            if($data['store_id'] == $store_id)
+                return $data;
+        }
+
         $wwk_settings = $this->model_setting_setting->getSetting('webwinkelkeur');
 
         $settings = array();
@@ -102,5 +111,14 @@ class ModelModuleWebwinkelkeur extends Model {
         $settings = $this->getSettings('webwinkelkeur');
 
         return !empty($settings['multistore']);
+    }
+
+    public function getModulesByCode($code) {
+        $query = $this->db->query("
+            SELECT * FROM `" . DB_PREFIX . "module`" .
+                " WHERE `code` = '" . $this->db->escape($code) . "'" .
+                " ORDER BY `name`");
+
+        return $query->rows;
     }
 }
