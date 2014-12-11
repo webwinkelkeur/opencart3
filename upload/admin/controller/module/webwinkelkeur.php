@@ -77,20 +77,8 @@ class ControllerModuleWebwinkelkeur extends Controller {
         $data['view_stores'] = array(array(
             'store_id' => 0,
             'name'     => $this->config->get('config_name'),
+            'settings' => $settings,
         ));
-
-        if($settings['multistore'])
-            $data['view_stores'] = array_merge($data['view_stores'], $data['stores']);
-
-        foreach($data['view_stores'] as &$store) {
-            if($store['store_id'] && isset($settings['store'][$store['store_id']]))
-                $store['settings'] = $settings['store'][$store['store_id']];
-            elseif($store['store_id'])
-                $store['settings'] = $this->defaultSettings();
-            else
-                $store['settings'] = array_merge($settings, $this->request->post);
-            $store['field_name'] = $store['store_id'] ? "store[{$store['store_id']}][%s]" : "%s";
-        }
 
         $this->load->model('localisation/order_status');
 

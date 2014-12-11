@@ -33,7 +33,10 @@
               <input type="hidden" id="redirStore" name="selectStore" />
               <select class="form-control" name="store_id" onchange="switchStore();">
               <?php foreach($stores as $store): ?>
-                <option value="<?php echo $store['store_id'] ?>"><?php echo $store['name'] ?></option>
+                <option value="<?php echo $store['store_id'] ?>"
+                        <?php if($store['store_id'] == $view_stores[0]['store_id']) echo "selected"; ?> >
+                  <?php echo $store['name'] ?>
+                </option>
               <?php endforeach; ?>
               </select>
             </div>
@@ -53,8 +56,7 @@
           <div class="form-group required">
             <label class="col-sm-2 control-label">Webwinkel ID</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control"
-                     name="<?php printf($store['field_name'], 'shop_id'); ?>"
+              <input type="text" class="form-control" name="store[shop_id]"
                      value="<?php echo $store['settings']['shop_id']; ?>" />
               <?php if($error_shopid): ?>
                 <div class="text-danger"><?php echo $error_shopid; ?></div>
@@ -64,8 +66,7 @@
           <div class="form-group required">
             <label class="col-sm-2 control-label">API key</label>
             <div class="col-sm-10">
-              <input type="text" class="form-control"
-                     name="<?php printf($store['field_name'], 'api_key'); ?>"
+              <input type="text" class="form-control" name="store[api_key]"
                      value="<?php echo $store['settings']['api_key']; ?>" />
               <?php if($error_apikey): ?>
                 <div class="text-danger"><?php echo $error_apikey; ?></div>
@@ -77,12 +78,12 @@
             <div class="col-sm-10">
               <label class="radio-inline">
                 <input type="radio" value="1" <?php if($store['settings']['sidebar']) echo "checked"; ?>
-                       name="<?php printf($store['field_name'], 'sidebar'); ?>" >
+                       name="store[sidebar]" >
                 Ja
               </label>
               <label class="radio-inline">
                 <input type="radio" value="0" <?php if(!$store['settings']['sidebar']) echo "checked"; ?>
-                       name="<?php printf($store['field_name'], 'sidebar'); ?>" >
+                       name="store[sidebar]" >
                 Nee
               </label>
             </div>
@@ -91,7 +92,7 @@
             <label class="col-sm-2 control-label">Sidebar positie</label>
             <div class="col-sm-10">
               <select class="form-control"
-                      name="<?php printf($store['field_name'], 'sidebar_position'); ?>">
+                      name="store[sidebar_position]">
                 <option value="left"  <?php if($store['settings']['sidebar_position'] == 'left') echo "selected"; ?> >Links</option>
                 <option value="right" <?php if($store['settings']['sidebar_position'] == 'right') echo "selected"; ?> >Rechts</option>
               </select>
@@ -106,7 +107,7 @@
             </label>
             <div class="col-sm-10">
               <input type="text" size="2" value="<?php echo $store['settings']['sidebar_top']; ?>" class="form-control"
-                     name="<?php printf($store['field_name'], 'sidebar_top'); ?>" />
+                     name="store[sidebar_top]" />
             </div>
           </div>
           <div class="form-group">
@@ -117,7 +118,7 @@
               </span>
             </label>
             <div class="col-sm-10">
-              <select class="form-control" name="<?php printf($store['field_name'], 'invite'); ?>">
+              <select class="form-control" name="store[invite]">
                 <option value="1" <?php if($store['settings']['invite'] == 1) echo "selected"; ?> >Ja, na elke bestelling</option>
                 <option value="2" <?php if($store['settings']['invite'] == 2) echo "selected"; ?> >Ja, alleen bij de eerste bestelling</option>
                 <option value="0" <?php if($store['settings']['invite'] == 0) echo "selected"; ?> >Nee, geen uitnodigingen versturen</option>
@@ -134,7 +135,7 @@
             <div class="col-sm-10">
               <input type="text" size="2" class="form-control"
                      value="<?php echo $store['settings']['invite_delay']; ?>"
-                     name="<?php printf($store['field_name'], 'invite_delay'); ?>" />
+                     name="store[invite_delay]" />
             </div>
           </div>
           <div class="form-group">
@@ -149,7 +150,7 @@
                 <?php foreach($order_statuses as $order_status): ?>
                   <div class="checkbox webwinkelkeur-order-statuses">
                     <label>
-                      <input type="checkbox" name="<?php printf($store['field_name'], 'order_statuses'); ?>[]"
+                      <input type="checkbox" name="store[order_statuses][]"
                              value="<?php echo $order_status['order_status_id']; ?>"
                              <?php if(in_array($order_status['order_status_id'], $store['settings']['order_statuses'])) echo 'checked'; ?> />
                         <?php echo $order_status['name']; ?>
@@ -164,12 +165,12 @@
             <div class="col-sm-10">
               <label class="radio-inline">
                 <input type="radio" value="1" <?php if($store['settings']['tooltip']) echo "checked"; ?>
-                       name="<?php printf($store['field_name'], 'tooltip'); ?>">
+                       name="store[tooltip]">
                 Ja
               </label>
               <label class="radio-inline">
                 <input type="radio" value="0" <?php if(!$store['settings']['tooltip']) echo "checked"; ?>
-                       name="<?php printf($store['field_name'], 'tooltip'); ?>">
+                       name="store[tooltip]">
                 Nee
               </label>
             </div>
@@ -179,12 +180,12 @@
             <div class="col-sm-10">
               <label class="radio-inline">
                 <input type="radio" value="1" <?php if($store['settings']['javascript']) echo "checked"; ?>
-                       name="<?php printf($store['field_name'], 'javascript'); ?>">
+                       name="store[javascript]">
                 Ja
               </label>
               <label class="radio-inline">
                 <input type="radio" value="0" <?php if(!$store['settings']['javascript']) echo "checked"; ?>
-                       name="<?php printf($store['field_name'], 'javascript'); ?>">
+                       name="store[javascript]">
                 Nee
               </label>
             </div>
@@ -200,13 +201,13 @@
               <label class="radio-inline">
                 <input type="radio" value="1"
                        <?php if($store['settings']['rich_snippet']) echo "checked"; ?>
-                       name="<?php printf($store['field_name'], 'rich_snippet'); ?>">
+                       name="store[rich_snippet]">
                 Ja
               </label>
               <label class="radio-inline">
                 <input type="radio" value="0"
                        <?php if(!$store['settings']['rich_snippet']) echo "checked"; ?>
-                       name="<?php printf($store['field_name'], 'rich_snippet'); ?>">
+                       name="store[rich_snippet]">
                 Nee
               </label>
             </div>
