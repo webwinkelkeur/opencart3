@@ -280,8 +280,16 @@ class ControllerModuleWebwinkelkeur extends Controller {
     private function createModule($settings) {
         $this->load->model('extension/module');
 
+        $name = '';
+        $stores = $this->model_module_webwinkelkeur->getStores();
+        foreach($stores as $store) {
+            if($store['store_id'] == $settings['store_id'])
+                $name = $store['name'];
+        }
+
         $data = $this->defaultSettings();
         $module_settings = array_merge($data, array(
+            'name'      => $name,
             'store_id'  => $settings['store_id'],
         ));
 
