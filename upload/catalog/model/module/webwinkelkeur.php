@@ -94,15 +94,7 @@ class ModelModuleWebwinkelkeur extends Model {
             $settings[$name[1]] = $value;
         }
 
-        if(!empty($settings['multistore'])
-           && ($store_id = $this->config->get('config_store_id'))
-        ) {
-            if(empty($settings['store'][$store_id]))
-                return array();
-            return $settings['store'][$store_id];
-        } else {
-            return $settings;
-        }
+        return $settings;
     }
 
     public function getMultistore() {
