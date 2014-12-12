@@ -22,6 +22,7 @@
   </div>
   <div class="container-fluid">
     <form action="" method="post" enctype="multipart/form-data" class="form-horizontal" id="form" name="webwinkelkeur">
+      <?php if(count($stores) > 1): ?>
       <div class="panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title"><i class="fa fa-pencil"></i>Selecteer Webwinkel</h3>
@@ -43,6 +44,7 @@
           </div>
         </div>
       </div>
+      <?php endif ?>
       <?php foreach($view_stores as $store): ?>
       <div class="panel panel-default">
         <div class="panel-heading">
