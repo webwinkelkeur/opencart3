@@ -251,6 +251,11 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
         $this->load->model('extension/module');
         if(isset($this->request->get['module_id'])) {
+            $modules = $this->model_extension_module->getModulesByCode('webwinkelkeur');
+            foreach($modules as $module) {
+                if($module['module_id'] === $this->request->get['module_id'])
+                    $settings['name'] = $module['name'];
+            }
             $this->model_extension_module->editModule($this->request->get['module_id'], $settings);
             return;
         }
