@@ -1,8 +1,13 @@
 <?php
 require_once DIR_SYSTEM . 'library/Peschar_Ping.php';
 class ControllerModuleWebwinkelkeur extends Controller {
-    public function index() {
+    public function index($dummy) {
+
         $this->load->model('module/webwinkelkeur');
+
+        $modules = $this->model_module_webwinkelkeur->getModulesByCode('webwinkelkeur');
+        if(empty($dummy) && count($modules))
+            return;
 
         $settings = $this->model_module_webwinkelkeur->getSettings();
 
