@@ -25,11 +25,11 @@
       <?php if(count($stores) > 1): ?>
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title"><i class="fa fa-pencil"></i>Selecteer Webwinkel</h3>
+          <h3 class="panel-title"><i class="fa fa-pencil"></i>Selecteer winkel</h3>
         </div>
         <div class="panel-body">
           <div class="form-group">
-            <label class="col-sm-2 control-label">Actieve Webwinkel</label>
+            <label class="col-sm-2 control-label">Actieve winkel</label>
             <div class="col-sm-10">
               <input type="hidden" id="redirStore" name="selectStore" />
               <select class="form-control" name="store_id" onchange="switchStore();">
