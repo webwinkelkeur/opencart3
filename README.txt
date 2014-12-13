@@ -5,7 +5,7 @@ Deze module integreert de WebwinkelKeur sidebar module in uw webshop. De module
 kan eenvoudig worden geïnstalleerd. Gebruik daarvoor de onderstaande 
 installatieinstructies.
 
-De module is getest met OpenCart versies 2.0.0.0 en later.
+De module is getest met OpenCart versies 2.0.1.0 en later.
 
 U kunt de module ook laten installeren door de ontwikkelaar. Neem daarvoor per 
 e-mail contact op.
