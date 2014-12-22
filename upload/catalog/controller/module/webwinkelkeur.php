@@ -2,6 +2,7 @@
 require_once DIR_SYSTEM . 'library/Peschar_Ping.php';
 class ControllerModuleWebwinkelkeur extends Controller {
     public function index($dummy) {
+        $msg = @include DIR_SYSTEM . 'library/webwinkelkeur-messages.php';
 
         $this->load->model('module/webwinkelkeur');
 
@@ -11,12 +12,13 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
         $settings = $this->model_module_webwinkelkeur->getSettings();
 
-        $this->silence(array('Peschar_Ping', 'run'), 'WebwinkelKeur OpenCart', DIR_SYSTEM . '/..');
+        $this->silence(array('Peschar_Ping', 'run'), $msg['PESCHAR_PING'], DIR_SYSTEM . '/..');
 
         if(empty($settings['shop_id']))
             return;
 
         $data = array();
+        $data['msg'] = $msg;
 
         if(!empty($settings['sidebar']) || !empty($settings['tooltip'])
            || !empty($settings['javascript'])
@@ -58,14 +60,16 @@ class ControllerModuleWebwinkelkeur extends Controller {
     }
 
     private function getRichSnippet($settings) {
+        $msg = @include DIR_SYSTEM . 'library/webwinkelkeur-messages.php';
+
         $tmp_dir = @sys_get_temp_dir();
         if(!is_writable($tmp_dir))
             $tmp_dir = '/tmp';
         if(!is_writable($tmp_dir))
             return;
 
-        $url = sprintf('http://www.webwinkelkeur.nl/shop_rich_snippet.php?id=%s',
-                       (int) $settings['shop_id']);
+        $url = sprintf('http://%s/shop_rich_snippet.php?id=%s',
+                       $msg['APP_DOMAIN'], (int) $settings['shop_id']);
 
         $cache_file = $tmp_dir . DIRECTORY_SEPARATOR . 'WEBWINKELKEUR_'
             . md5(__FILE__) . '_' . md5($url);

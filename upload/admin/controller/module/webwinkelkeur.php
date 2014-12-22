@@ -3,6 +3,8 @@ class ControllerModuleWebwinkelkeur extends Controller {
     private $error = array();
 
     public function index() {
+        $msg = @include DIR_SYSTEM . 'library/webwinkelkeur-messages.php';
+
         $this->language->load('common/header');
 
         $this->language->load('module/account');
@@ -12,6 +14,8 @@ class ControllerModuleWebwinkelkeur extends Controller {
         $this->document->setTitle('WebwinkelKeur');
 
         $data = array();
+
+        $data['msg'] = $msg;
 
         $data['error_warning'] = array();
 
@@ -68,7 +72,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
    		);
 
    		$data['breadcrumbs'][] = array(
-       		'text'      => 'WebwinkelKeur',
+            'text'      => $msg['WEBWINKELKEUR'],
 			'href'      => $this->url->link('module/webwinkelkeur', 'token=' . $this->session->data['token'], 'ssl'),
       		'separator' => ' :: '
    		);
@@ -101,14 +105,16 @@ class ControllerModuleWebwinkelkeur extends Controller {
     }
 
     private function validateSettings(array &$data) {
+        $msg = @include DIR_SYSTEM . 'library/webwinkelkeur-messages.php';
+
         $data['shop_id'] = trim($data['shop_id']);
         $data['api_key'] = trim($data['api_key']);
 
         if(!empty($data['shop_id']) && !ctype_digit($data['shop_id']))
-            $this->error['shopid'] = 'Uw webwinkel ID mag alleen cijfers bevatten.';
+            $this->error['shopid'] = $msg['SHOP_ID_INVALID'];
 
         if($data['invite'] && !$data['api_key'])
-            $this->error['apikey'] = 'Vul uw API key in.';
+            $this->error['apikey'] = $msg['API_KEY_MISSING'];
 
         return !$this->error;
     }

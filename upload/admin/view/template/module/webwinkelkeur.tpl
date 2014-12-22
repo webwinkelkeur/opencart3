@@ -25,11 +25,11 @@
       <?php if(count($stores) > 1): ?>
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title"><i class="fa fa-pencil"></i>Selecteer winkel</h3>
+          <h3 class="panel-title"><i class="fa fa-pencil"></i><?php echo $msg['SELECT_SHOP']; ?></h3>
         </div>
         <div class="panel-body">
           <div class="form-group">
-            <label class="col-sm-2 control-label">Actieve winkel</label>
+            <label class="col-sm-2 control-label"><?php echo $msg['ACTIVE_SHOP']; ?></label>
             <div class="col-sm-10">
               <input type="hidden" id="redirStore" name="selectStore" />
               <select class="form-control" name="store_id" onchange="switchStore();">
@@ -48,11 +48,11 @@
       <?php foreach($view_stores as $store): ?>
       <div class="panel panel-default">
         <div class="panel-heading">
-          <h3 class="panel-title"><i class="fa fa-pencil"></i>Instellingen</h3>
+          <h3 class="panel-title"><i class="fa fa-pencil"></i><?php echo $msg['SETTINGS']; ?></h3>
         </div>
         <div class="panel-body">
           <div class="form-group required">
-            <label class="col-sm-2 control-label">Webwinkel ID</label>
+            <label class="col-sm-2 control-label"><?php echo $msg['SHOP_ID']; ?></label>
             <div class="col-sm-10">
               <input type="text" class="form-control" name="store[shop_id]"
                      value="<?php echo $store['settings']['shop_id']; ?>" />
@@ -62,7 +62,7 @@
             </div>
           </div>
           <div class="form-group required">
-            <label class="col-sm-2 control-label">API key</label>
+            <label class="col-sm-2 control-label"><?php echo $msg['API_KEY']; ?></label>
             <div class="col-sm-10">
               <input type="text" class="form-control" name="store[api_key]"
                      value="<?php echo $store['settings']['api_key']; ?>" />
@@ -72,35 +72,35 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-2 control-label">Sidebar weergeven</label>
+            <label class="col-sm-2 control-label"><?php echo $msg['DISPLAY_SIDEBAR']; ?></label>
             <div class="col-sm-10">
               <label class="radio-inline">
                 <input type="radio" value="1" <?php if($store['settings']['sidebar']) echo "checked"; ?>
                        name="store[sidebar]" >
-                Ja
+                <?php echo $msg['YES']; ?>
               </label>
               <label class="radio-inline">
                 <input type="radio" value="0" <?php if(!$store['settings']['sidebar']) echo "checked"; ?>
                        name="store[sidebar]" >
-                Nee
+                <?php echo $msg['NO']; ?>
               </label>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-2 control-label">Sidebar positie</label>
+            <label class="col-sm-2 control-label"><?php echo $msg['SIDEBAR_POSITION']; ?></label>
             <div class="col-sm-10">
               <select class="form-control"
                       name="store[sidebar_position]">
-                <option value="left"  <?php if($store['settings']['sidebar_position'] == 'left') echo "selected"; ?> >Links</option>
-                <option value="right" <?php if($store['settings']['sidebar_position'] == 'right') echo "selected"; ?> >Rechts</option>
+                <option value="left"  <?php if($store['settings']['sidebar_position'] == 'left') echo "selected"; ?> ><?php echo $msg['LEFT']; ?></option>
+                <option value="right" <?php if($store['settings']['sidebar_position'] == 'right') echo "selected"; ?> ><?php echo $msg['RIGHT']; ?></option>
               </select>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label required">
               <span data-toggle="tooltip"
-                    title="aantal pixels vanaf de bovenkant">
-                Sidebar hoogte
+                    title="<?php echo $msg['SIDEBAR_TOP_TITLE']; ?>">
+                <?php echo $msg['SIDEBAR_TOP']; ?>
               </span>
             </label>
             <div class="col-sm-10">
@@ -111,23 +111,23 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">
               <span data-toggle="tooltip"
-                    title="alleen beschikbaar voor Plus-leden">
-                Uitnodiging versturen
+                    title="<?php echo $msg['INVITE_TITLE']; ?>">
+                <?php echo $msg['INVITE']; ?>
               </span>
             </label>
             <div class="col-sm-10">
               <select class="form-control" name="store[invite]">
-                <option value="1" <?php if($store['settings']['invite'] == 1) echo "selected"; ?> >Ja, na elke bestelling</option>
-                <option value="2" <?php if($store['settings']['invite'] == 2) echo "selected"; ?> >Ja, alleen bij de eerste bestelling</option>
-                <option value="0" <?php if($store['settings']['invite'] == 0) echo "selected"; ?> >Nee, geen uitnodigingen versturen</option>
+                <option value="1" <?php if($store['settings']['invite'] == 1) echo "selected"; ?> ><?php echo $msg['INVITE_1']; ?></option>
+                <option value="2" <?php if($store['settings']['invite'] == 2) echo "selected"; ?> ><?php echo $msg['INVITE_2']; ?></option>
+                <option value="0" <?php if($store['settings']['invite'] == 0) echo "selected"; ?> ><?php echo $msg['INVITE_0']; ?></option>
               </select>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label">
               <span data-toggle="tooltip"
-                    title="de uitnodiging wordt verstuurd nadat het opgegeven aantal dagen is verstreken">
-                Wachttijd voor uitnodiging
+                    title="<?php echo $msg['INVITE_DELAY_TITLE']; ?>">
+                <?php echo $msg['INVITE_DELAY']; ?>
               </span>
             </label>
             <div class="col-sm-10">
@@ -139,8 +139,8 @@
           <div class="form-group">
             <label class="col-sm-2 control-label">
               <span data-toggle="tooltip"
-                    title="de uitnodiging wordt alleen verstuurd wanneer de bestelling de aangevinkte status heeft" >
-                Orderstatus voor uitnodiging
+                    title="<?php echo $msg['ORDER_STATUS_TITLE']; ?>" >
+                <?php echo $msg['ORDER_STATUS']; ?>
               </span>
             </label>
             <div class="col-sm-10">
@@ -159,40 +159,40 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-2 control-label">Tooltip weergeven</label>
+            <label class="col-sm-2 control-label"><?php echo $msg['TOOLTIP']; ?></label>
             <div class="col-sm-10">
               <label class="radio-inline">
                 <input type="radio" value="1" <?php if($store['settings']['tooltip']) echo "checked"; ?>
                        name="store[tooltip]">
-                Ja
+                <?php echo $msg['YES']; ?>
               </label>
               <label class="radio-inline">
                 <input type="radio" value="0" <?php if(!$store['settings']['tooltip']) echo "checked"; ?>
                        name="store[tooltip]">
-                Nee
+                <?php echo $msg['NO']; ?>
               </label>
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-2 control-label">JavaScript-integratie</label>
+            <label class="col-sm-2 control-label"><?php echo $msg['JAVASCRIPT']; ?></label>
             <div class="col-sm-10">
               <label class="radio-inline">
                 <input type="radio" value="1" <?php if($store['settings']['javascript']) echo "checked"; ?>
                        name="store[javascript]">
-                Ja
+                <?php echo $msg['YES']; ?>
               </label>
               <label class="radio-inline">
                 <input type="radio" value="0" <?php if(!$store['settings']['javascript']) echo "checked"; ?>
                        name="store[javascript]">
-                Nee
+                <?php echo $msg['NO']; ?>
               </label>
             </div>
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label">
               <span data-toggle="tooltip"
-                    title="Voeg een <a href='https://support.google.com/webmasters/answer/99170?hl=nl'>rich snippet</a> toe aan de footer. Google kan uw waardering dan in de zoekresultaten tonen. Gebruik op eigen risico.">
-                Rich snippet sterren
+                    title="<?php echo $msg['RICH_SNIPPET_TITLE']; ?>">
+                <?php echo $msg['RICH_SNIPPET']; ?>
               </span>
             </label>
             <div class="col-sm-10">
@@ -200,13 +200,13 @@
                 <input type="radio" value="1"
                        <?php if($store['settings']['rich_snippet']) echo "checked"; ?>
                        name="store[rich_snippet]">
-                Ja
+                <?php echo $msg['YES']; ?>
               </label>
               <label class="radio-inline">
                 <input type="radio" value="0"
                        <?php if(!$store['settings']['rich_snippet']) echo "checked"; ?>
                        name="store[rich_snippet]">
-                Nee
+                <?php echo $msg['NO']; ?>
               </label>
             </div>
           </div>
@@ -218,7 +218,7 @@
     <div class="panel panel-default">
       <div class="panel-heading">
         <h3 class="panel-title"><i class="fa fa-exclamation-triangle"></i>
-          Fouten opgetreden bij het versturen van uitnodigingen
+          <?php echo $msg['INVITE_ERRORS']; ?>
         </h3>
       </div>
       <div class="panel-body">
@@ -230,7 +230,7 @@
               <?php if($invite_error['response']): ?>
               <?php echo htmlentities($invite_error['response'], ENT_QUOTES, 'UTF-8'); ?>
               <?php else: ?>
-              De Webwinkelkeur-server kon niet worden bereikt.
+              <?php echo $msg['INVITE_GENERIC_ERROR']; ?>
               <?php endif; ?>
             </td>
           </tr>
