@@ -33,6 +33,8 @@ class ModelModuleWebwinkelkeur extends Model {
     }
 
     public function sendInvites() {
+        $msg = @include DIR_SYSTEM . 'library/webwinkelkeur-messages.php';
+
         $settings = $this->getSettings();
 
         if(empty($settings['shop_id']) ||
@@ -62,7 +64,7 @@ class ModelModuleWebwinkelkeur extends Model {
                 );
                 if($settings['invite'] == 2)
                     $parameters['noremail'] = '1';
-                $url = 'http://www.webwinkelkeur.nl/api.php?' . http_build_query($parameters);
+                $url = 'http://' . $msg['APP_DOMAIN'] . '/api.php?' . http_build_query($parameters);
                 $retriever = new Peschar_URLRetriever();
                 $response = $retriever->retrieve($url);
                 if(preg_match('|^Success:|', $response) || preg_match('|invite already sent|', $response)) {
