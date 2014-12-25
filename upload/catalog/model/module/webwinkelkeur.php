@@ -41,7 +41,7 @@ class ModelModuleWebwinkelkeur extends Model {
            empty($settings['api_key']) ||
            empty($settings['invite'])
         )
-            continue;
+            return;
 
         foreach($this->getOrdersToInvite($settings) as $order) {
             $this->db->query("
