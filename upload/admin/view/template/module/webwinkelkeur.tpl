@@ -12,7 +12,7 @@
           <i class="fa fa-reply"></i>
         </a>
       </div>
-      <h1>WebwinkelKeur</h1>
+      <h1><?php echo $msg['WEBWINKELKEUR']; ?></h1>
       <ul class="breadcrumb">
         <?php foreach ($breadcrumbs as $breadcrumb) : ?>
         <li><a href="<?php echo $breadcrumb['href']; ?>"><?php echo $breadcrumb['text']; ?></a></li>

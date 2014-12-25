@@ -11,7 +11,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
         $this->load->model('module/webwinkelkeur');
 
-        $this->document->setTitle('WebwinkelKeur');
+        $this->document->setTitle($msg['WEBWINKELKEUR']);
 
         $data = array();
 
