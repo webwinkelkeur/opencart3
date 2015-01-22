@@ -40,7 +40,9 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
             if($this->validateForm()) {
                 $form_data = $this->request->post['store'];
-                $form_data['store_id'] = $this->request->post['store_id'];
+                $form_data['store_id'] =
+                    isset($this->request->post['store_id'])
+                    ? $this->request->post['store_id'] : null;
 
                 $new_settings = $this->cleanSettings($form_data);
                 $this->editSettings($new_settings);
