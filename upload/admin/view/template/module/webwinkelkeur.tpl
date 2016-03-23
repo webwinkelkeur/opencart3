@@ -72,40 +72,23 @@
             </div>
           </div>
           <div class="form-group">
-            <label class="col-sm-2 control-label"><?php echo $msg['DISPLAY_SIDEBAR']; ?></label>
-            <div class="col-sm-10">
-              <label class="radio-inline">
-                <input type="radio" value="1" <?php if($store['settings']['sidebar']) echo "checked"; ?>
-                       name="store[sidebar]" >
-                <?php echo $msg['YES']; ?>
-              </label>
-              <label class="radio-inline">
-                <input type="radio" value="0" <?php if(!$store['settings']['sidebar']) echo "checked"; ?>
-                       name="store[sidebar]" >
-                <?php echo $msg['NO']; ?>
-              </label>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label"><?php echo $msg['SIDEBAR_POSITION']; ?></label>
-            <div class="col-sm-10">
-              <select class="form-control"
-                      name="store[sidebar_position]">
-                <option value="left"  <?php if($store['settings']['sidebar_position'] == 'left') echo "selected"; ?> ><?php echo $msg['LEFT']; ?></option>
-                <option value="right" <?php if($store['settings']['sidebar_position'] == 'right') echo "selected"; ?> ><?php echo $msg['RIGHT']; ?></option>
-              </select>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label required">
+            <label class="col-sm-2 control-label">
               <span data-toggle="tooltip"
-                    title="<?php echo $msg['SIDEBAR_TOP_TITLE']; ?>">
-                <?php echo $msg['SIDEBAR_TOP']; ?>
+                    title="<?php echo $msg['JAVASCRIPT_TITLE']; ?>">
+                <?php echo $msg['JAVASCRIPT']; ?>
               </span>
             </label>
             <div class="col-sm-10">
-              <input type="text" size="2" value="<?php echo $store['settings']['sidebar_top']; ?>" class="form-control"
-                     name="store[sidebar_top]" />
+              <label class="radio-inline">
+                <input type="radio" value="1" <?php if($store['settings']['javascript']) echo "checked"; ?>
+                       name="store[javascript]">
+                <?php echo $msg['YES']; ?>
+              </label>
+              <label class="radio-inline">
+                <input type="radio" value="0" <?php if(!$store['settings']['javascript']) echo "checked"; ?>
+                       name="store[javascript]">
+                <?php echo $msg['NO']; ?>
+              </label>
             </div>
           </div>
           <div class="form-group">
@@ -156,36 +139,6 @@
                   </div>
                 <?php endforeach; ?>
               </div>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label"><?php echo $msg['TOOLTIP']; ?></label>
-            <div class="col-sm-10">
-              <label class="radio-inline">
-                <input type="radio" value="1" <?php if($store['settings']['tooltip']) echo "checked"; ?>
-                       name="store[tooltip]">
-                <?php echo $msg['YES']; ?>
-              </label>
-              <label class="radio-inline">
-                <input type="radio" value="0" <?php if(!$store['settings']['tooltip']) echo "checked"; ?>
-                       name="store[tooltip]">
-                <?php echo $msg['NO']; ?>
-              </label>
-            </div>
-          </div>
-          <div class="form-group">
-            <label class="col-sm-2 control-label"><?php echo $msg['JAVASCRIPT']; ?></label>
-            <div class="col-sm-10">
-              <label class="radio-inline">
-                <input type="radio" value="1" <?php if($store['settings']['javascript']) echo "checked"; ?>
-                       name="store[javascript]">
-                <?php echo $msg['YES']; ?>
-              </label>
-              <label class="radio-inline">
-                <input type="radio" value="0" <?php if(!$store['settings']['javascript']) echo "checked"; ?>
-                       name="store[javascript]">
-                <?php echo $msg['NO']; ?>
-              </label>
             </div>
           </div>
           <div class="form-group">

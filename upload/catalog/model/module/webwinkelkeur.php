@@ -7,12 +7,12 @@ class ModelModuleWebwinkelkeur extends Model {
         $where = array();
 
         if($this->getMultistore())
-            $where[] = 'store_id = ' . (int) $this->config->get('config_store_id');
+            $where[] = 'o.store_id = ' . (int) $this->config->get('config_store_id');
 
         if(empty($settings['order_statuses']))
             $where[] = '0';
         else
-            $where[] = 'order_status_id IN (' . implode(',', array_map('intval', $settings['order_statuses'])) . ')';
+            $where[] = 'o.order_status_id IN (' . implode(',', array_map('intval', $settings['order_statuses'])) . ')';
 
         if(empty($where))
             $where = '0';
@@ -20,12 +20,13 @@ class ModelModuleWebwinkelkeur extends Model {
             $where = implode(' AND ', $where);
 
         $query = $this->db->query($q="
-            SELECT *
-            FROM `" . DB_PREFIX . "order`
+            SELECT o.*, l.code as language_code
+            FROM `" . DB_PREFIX . "order` o
+            LEFT JOIN `" . DB_PREFIX . "language` l USING(language_id)
             WHERE
-                webwinkelkeur_invite_sent = 0
-                AND webwinkelkeur_invite_tries < 10
-                AND webwinkelkeur_invite_time < $max_time
+                o.webwinkelkeur_invite_sent = 0
+                AND o.webwinkelkeur_invite_tries < 10
+                AND o.webwinkelkeur_invite_time < $max_time
                 AND $where
         ");
 
@@ -61,6 +62,9 @@ class ModelModuleWebwinkelkeur extends Model {
                     'email'     => $order['email'],
                     'order'     => $order['order_id'],
                     'delay'     => $settings['invite_delay'],
+                    'lang'      => str_replace('-', '_', $order['language_code']),
+                    'customername' => "$order[payment_firstname] $order[payment_lastname]",
+                    'client'    => 'opencart2',
                 );
                 if($settings['invite'] == 2)
                     $parameters['noremail'] = '1';

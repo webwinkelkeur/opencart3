@@ -20,20 +20,10 @@ class ControllerModuleWebwinkelkeur extends Controller {
         $data = array();
         $data['msg'] = $msg;
 
-        if(!empty($settings['sidebar']) || !empty($settings['tooltip'])
-           || !empty($settings['javascript'])
-        ) {
+        if(!empty($settings['javascript'])) {
             $js_settings = array(
                 '_webwinkelkeur_id' => (int) $settings['shop_id'],
-                '_webwinkelkeur_sidebar' => !empty($settings['sidebar']),
-                '_webwinkelkeur_tooltip' => !empty($settings['tooltip']),
             );
-            if(!empty($settings['sidebar_position'])) {
-                $js_settings['_webwinkelkeur_sidebar_position'] = $settings['sidebar_position'];
-            }
-            if(!empty($settings['sidebar_top'])) {
-                $js_settings['_webwinkelkeur_sidebar_top'] = $settings['sidebar_top'];
-            }
             $data['settings'] = $js_settings;
         }
 
@@ -45,7 +35,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
         if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/module/webwinkelkeur.tpl')) {
             $this->template = $this->config->get('config_template') . '/template/module/webwinkelkeur.tpl';
         } else {
-            $this->template = 'default/template/module/webwinkelkeur.tpl';
+            $this->template = 'module/webwinkelkeur.tpl';
         }
 
         return $this->load->view($this->template, $data);
