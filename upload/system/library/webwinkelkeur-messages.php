@@ -21,7 +21,7 @@ return array(
 'INVITE_DELAY' => 'Wachttijd voor uitnodiging',
 'ORDER_STATUS_TITLE' => 'de uitnodiging wordt alleen verstuurd wanneer de bestelling de aangevinkte status heeft',
 'ORDER_STATUS' => 'Orderstatus voor uitnodiging',
-'JAVASCRIPT_TITLE' => "Gebruik de JavaScript-integratie om de sidebar en de tooltip op je site te plaatsen.<br>Alle instellingen voor de sidebar en de tooltip, vind je in het <a href='https://dashboard.webwinkelkeur.nl/integration' target='_blank'>WebwinkelKeur Dashboard</a>.",
+'JAVASCRIPT_TITLE' => "Gebruik de JavaScript-integratie om de sidebar en de tooltip op uw site te plaatsen.<br>Alle instellingen voor de sidebar en de tooltip, vindt u in het <a href='https://dashboard.webwinkelkeur.nl/integration' target='_blank'>WebwinkelKeur Dashboard</a>.",
 'JAVASCRIPT' => 'JavaScript-integratie',
 'RICH_SNIPPET_TITLE' => "Voeg een <a href='https://support.google.com/webmasters/answer/99170?hl=nl'>rich snippet</a> toe aan de footer. Google kan uw waardering dan in de zoekresultaten tonen. Gebruik op eigen risico.",
 'RICH_SNIPPET' => 'Rich snippet sterren',
