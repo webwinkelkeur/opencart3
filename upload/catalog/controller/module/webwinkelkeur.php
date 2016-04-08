@@ -35,7 +35,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
         if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/module/webwinkelkeur.tpl')) {
             $this->template = $this->config->get('config_template') . '/template/module/webwinkelkeur.tpl';
         } else {
-            $this->template = 'module/webwinkelkeur.tpl';
+            $this->template = 'module/webwinkelkeur';
         }
 
         return $this->load->view($this->template, $data);
