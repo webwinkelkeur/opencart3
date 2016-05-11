@@ -32,10 +32,12 @@ class ControllerModuleWebwinkelkeur extends Controller {
             if($html) $data['rich_snippet'] = $html;
         }
 
-        if (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/module/webwinkelkeur.tpl')) {
+        if (version_compare(VERSION, '2.2.0.0', '>=')) {
+            $this->template = 'module/webwinkelkeur';
+        } elseif (file_exists(DIR_TEMPLATE . $this->config->get('config_template') . '/template/module/webwinkelkeur.tpl')) {
             $this->template = $this->config->get('config_template') . '/template/module/webwinkelkeur.tpl';
         } else {
-            $this->template = 'module/webwinkelkeur';
+            $this->template = 'default/template/module/webwinkelkeur.tpl';
         }
 
         return $this->load->view($this->template, $data);
