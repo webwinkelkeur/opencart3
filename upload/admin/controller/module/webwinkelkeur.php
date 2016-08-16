@@ -3,6 +3,22 @@ class ControllerModuleWebwinkelkeur extends Controller {
     private $error = array();
 
     public function index() {
+        if (defined('VERSION') && version_compare(VERSION, '2.3.0.0', '>=')) {
+            // OpenCart 2.3.0.0 doesn't trigger install(), so we do it here...
+            $this->load->model('setting/setting');
+            if (!$this->model_setting_setting->getSetting('webwinkelkeur')) {
+                $this->install();
+            }
+
+            // OpenCart 2.3+ specific paths.
+            $path_module = 'extension/module/webwinkelkeur';
+            $path_extensions = 'extension/extension';
+        } else {
+            // OpenCart 2.2 and older specific paths.
+            $path_module = 'module/webwinkelkeur';
+            $path_extensions = 'extension/module';
+        }
+
         $msg = @include DIR_SYSTEM . 'library/webwinkelkeur-messages.php';
 
         $this->language->load('common/header');
@@ -26,7 +42,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
 		if($this->request->server['REQUEST_METHOD'] == 'POST') {
             if(!empty($this->request->post['selectStore'])) {
                 if($this->request->post['store_id'] == 0)
-                    $this->response->redirect($this->url->link('module/webwinkelkeur', 'token=' . $this->session->data['token'], 'SSL'));
+                    $this->response->redirect($this->url->link($path_module, 'token=' . $this->session->data['token'], 'SSL'));
 
                 $module_id = $this->findModule($this->request->post['store_id']);
 
@@ -34,7 +50,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
                     $this->createModule($this->request->post);
                     $module_id = $this->findModule($this->request->post['store_id']);
                 }
-                $this->response->redirect($this->url->link('module/webwinkelkeur',
+                $this->response->redirect($this->url->link($path_module,
                         'token=' . $this->session->data['token'] . '&module_id=' . $module_id, 'SSL'));
             }
 
@@ -46,7 +62,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
                 $new_settings = $this->cleanSettings($form_data);
                 $this->editSettings($new_settings);
-                $this->response->redirect($this->url->link('extension/module', 'token=' . $this->session->data['token'], 'SSL'));
+                $this->response->redirect($this->url->link($path_extensions, 'token=' . $this->session->data['token'], 'SSL'));
             }
         }
 
@@ -69,17 +85,17 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
    		$data['breadcrumbs'][] = array(
        		'text'      => $this->language->get('text_module'),
-			'href'      => $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'ssl'),
+			'href'      => $this->url->link($path_extensions, 'token=' . $this->session->data['token'], 'ssl'),
       		'separator' => false
    		);
 
    		$data['breadcrumbs'][] = array(
             'text'      => $msg['WEBWINKELKEUR'],
-			'href'      => $this->url->link('module/webwinkelkeur', 'token=' . $this->session->data['token'], 'ssl'),
+			'href'      => $this->url->link($path_module, 'token=' . $this->session->data['token'], 'ssl'),
       		'separator' => ' :: '
    		);
 
-        $data['cancel'] = $this->url->link('extension/module', 'token=' . $this->session->data['token'], 'ssl');
+        $data['cancel'] = $this->url->link($path_extensions, 'token=' . $this->session->data['token'], 'ssl');
 
         $data['button_save'] = $this->language->get('button_save');
         $data['button_cancel'] = $this->language->get('button_cancel');
