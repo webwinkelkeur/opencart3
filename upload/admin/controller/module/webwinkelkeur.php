@@ -3,6 +3,8 @@ class ControllerModuleWebwinkelkeur extends Controller {
     private $error = array();
 
     public function index() {
+        $this->language->load('common/header');
+
         if (defined('VERSION') && version_compare(VERSION, '2.3.0.0', '>=')) {
             // OpenCart 2.3.0.0 doesn't trigger install(), so we do it here...
             $this->load->model('setting/setting');
@@ -13,17 +15,21 @@ class ControllerModuleWebwinkelkeur extends Controller {
             // OpenCart 2.3+ specific paths.
             $path_module = 'extension/module/webwinkelkeur';
             $path_extensions = 'extension/extension';
+
+            $this->language->load('extension/module/account');
+
+            $text_extension = $this->language->get('text_extension');
         } else {
             // OpenCart 2.2 and older specific paths.
             $path_module = 'module/webwinkelkeur';
             $path_extensions = 'extension/module';
+
+            $this->language->load('module/account');
+
+            $text_extension = $this->language->get('text_module');
         }
 
         $msg = @include DIR_SYSTEM . 'library/webwinkelkeur-messages.php';
-
-        $this->language->load('common/header');
-
-        $this->language->load('module/account');
 
         $this->load->model('module/webwinkelkeur');
 
@@ -84,7 +90,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
         );
 
    		$data['breadcrumbs'][] = array(
-       		'text'      => $this->language->get('text_module'),
+       		'text'      => $text_extension,
 			'href'      => $this->url->link($path_extensions, 'token=' . $this->session->data['token'], 'ssl'),
       		'separator' => false
    		);
