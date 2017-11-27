@@ -12,7 +12,6 @@ return array(
 'API_KEY' => 'API key',
 'YES' => 'Ja',
 'NO' => 'Nee',
-'INVITE_TITLE' => 'alleen beschikbaar voor Plus-leden',
 'INVITE' => 'Uitnodiging versturen',
 'INVITE_1' => 'Ja, na elke bestelling',
 'INVITE_2' => 'Ja, alleen bij de eerste bestelling',

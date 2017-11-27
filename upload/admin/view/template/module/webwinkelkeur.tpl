@@ -93,10 +93,7 @@
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label">
-              <span data-toggle="tooltip"
-                    title="<?php echo $msg['INVITE_TITLE']; ?>">
-                <?php echo $msg['INVITE']; ?>
-              </span>
+              <?php echo $msg['INVITE']; ?>
             </label>
             <div class="col-sm-10">
               <select class="form-control" name="store[invite]">
@@ -105,7 +102,7 @@
                 <option value="0" <?php if($store['settings']['invite'] == 0) echo "selected"; ?> ><?php echo $msg['INVITE_0']; ?></option>
               </select>
             </div>
-            <div class="col-sm-10">
+            <div class="col-sm-10 pull-right">
               <label class="checkbox-inline">
                 <input name="store[limit_order_data]" <?php if($store['settings']['limit_order_data']) echo "checked"; ?> value="1" type="checkbox" class="form-control checkbox-inline" />
                 <span data-toggle="tooltip" title="<?php echo $msg['LIMIT_ORDER_DATA_DETAILS']; ?>">
