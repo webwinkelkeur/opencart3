@@ -42,6 +42,8 @@ class ModelModuleWebwinkelkeur extends Model {
                 if($settings['invite'] == 2)
                     $parameters['max_invitations_per_email'] = '1';
 
+                $post['order_data'] = json_encode($this->getOrderData($order));
+
                 $url = 'http://' . $msg['APP_DOMAIN'] . '/api/1.0/invitations.json?' . http_build_query($parameters);
                 $ch = curl_init($url);
                 curl_setopt_array($ch, array(
@@ -95,6 +97,76 @@ class ModelModuleWebwinkelkeur extends Model {
         $result = @json_decode($response);
         return is_object($result) && isset ($result->status)
                && ($result->status == 'success' || strpos($result->message, 'already sent') !== false);
+    }
+
+    private function getOrderData($order) {
+        $customer_fields = array(
+            'customer_id', 'customer_group_id',
+            'firstname', 'lastname',
+            'email', 'telephone', 'fax',
+            'custom_field'
+        );
+        $customer = array();
+        $invoice_address = array();
+        $delivery_address = array();
+        foreach ($order as $field => $value) {
+            if (in_array($field, $customer_fields)) {
+                $customer[$field] = $order[$field];
+            } else if (strpos($field, 'payment_') === 0) {
+                $new_field = str_replace('payment_', '', $field);
+                $invoice_address[$new_field] = $order[$field];
+            } else if (strpos($field, 'shipping_') === 0) {
+                $new_field = str_replace('shipping_', '', $field);
+                $delivery_address[$new_field] = $order[$field];
+            } else {
+                continue;
+            }
+            unset ($order[$field]);
+        }
+
+        $lines_query = "SELECT * FROM `" . DB_PREFIX . "order_product` WHERE `order_id` = {$order['order_id']}";
+        $order['order_lines'] = $this->db->query($lines_query)->rows;
+
+        $order_data = array(
+            'order' => $order,
+            'products' => $this->getOrderProducts($order),
+            'customer' => $customer,
+            'invoice_address' => $invoice_address,
+            'delivery_address' => $delivery_address
+        );
+
+        return $order_data;
+    }
+
+    private function getOrderProducts($order) {
+        $product_ids = array();
+        foreach ($order['order_lines'] as $line) {
+            if (!$line['product_id']) {
+                continue;
+            }
+            $product_ids[] = $line['product_id'];
+        }
+
+        $products_query = "
+          SELECT * 
+          FROM `" . DB_PREFIX . "product` AS `p`
+          LEFT JOIN `" . DB_PREFIX . "product_description` AS `pd`
+            ON `p`.`product_id` = `pd`.`product_id`
+                AND `pd`.`language_id` = {$order['language_id']}";
+        $products = $this->db->query($products_query)->rows;
+
+        $base_url = $this->request->server['HTTPS']
+                    ? $this->config->get('config_ssl')
+                    : $this->config->get('config_url');
+        foreach ($products as &$product) {
+            $images = array($base_url . 'image/' . $product['image']);
+            $image_query = "SELECT * FROM `" . DB_PREFIX . "product_image` WHERE `product_id` = {$product['product_id']}";
+            foreach ($this->db->query($image_query)->rows as $image) {
+                $images[] = $base_url . 'image/' . $image['image'];
+            }
+            $product['image_urls'] = $images;
+        }
+        return $products;
     }
 
     public function getSettings() {
