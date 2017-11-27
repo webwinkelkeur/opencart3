@@ -30,5 +30,6 @@ return array(
 
 // catalog
 'PESCHAR_PING' => 'WebwinkelKeur OpenCart 2',
-'APP_DOMAIN' => 'dashboard.webwinkelkeur.nl',
+'API_DOMAIN' => 'dashboard.webwinkelkeur.nl',
+'APP_DOMAIN' => 'www.webwinkelkeur.nl'
 );

@@ -44,7 +44,7 @@ class ModelModuleWebwinkelkeur extends Model {
 
                 $post['order_data'] = json_encode($this->getOrderData($order));
 
-                $url = 'http://' . $msg['APP_DOMAIN'] . '/api/1.0/invitations.json?' . http_build_query($parameters);
+                $url = 'http://' . $msg['API_DOMAIN'] . '/api/1.0/invitations.json?' . http_build_query($parameters);
                 $ch = curl_init($url);
                 curl_setopt_array($ch, array(
                     CURLOPT_POST => true,
