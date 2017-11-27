@@ -105,6 +105,14 @@
                 <option value="0" <?php if($store['settings']['invite'] == 0) echo "selected"; ?> ><?php echo $msg['INVITE_0']; ?></option>
               </select>
             </div>
+            <div class="col-sm-10">
+              <label class="checkbox-inline">
+                <input name="store[limit_order_data]" <?php if($store['settings']['limit_order_data']) echo "checked"; ?> value="1" type="checkbox" class="form-control checkbox-inline" />
+                <span data-toggle="tooltip" title="<?php echo $msg['LIMIT_ORDER_DATA_DETAILS']; ?>">
+                  <?php echo $msg['LIMIT_ORDER_DATA_LABEL']; ?>
+                </span>
+              </label>
+            </div>
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label">

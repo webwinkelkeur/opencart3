@@ -19,6 +19,8 @@ return array(
 'INVITE_0' => 'Nee, geen uitnodigingen versturen',
 'INVITE_DELAY_TITLE' => 'de uitnodiging wordt verstuurd nadat het opgegeven aantal dagen is verstreken',
 'INVITE_DELAY' => 'Wachttijd voor uitnodiging',
+'LIMIT_ORDER_DATA_LABEL' => 'Do not send order information to WebwinkelKeur',
+'LIMIT_ORDER_DATA_DETAILS' => 'Please note: not all WebwinkelKeur functionality will be available if you check this option!',
 'ORDER_STATUS_TITLE' => 'de uitnodiging wordt alleen verstuurd wanneer de bestelling de aangevinkte status heeft',
 'ORDER_STATUS' => 'Orderstatus voor uitnodiging',
 'JAVASCRIPT_TITLE' => "Gebruik de JavaScript-integratie om de sidebar en de tooltip op uw site te plaatsen.<br>Alle instellingen voor de sidebar en de tooltip, vindt u in het <a href='https://dashboard.webwinkelkeur.nl/integration' target='_blank'>WebwinkelKeur Dashboard</a>.",

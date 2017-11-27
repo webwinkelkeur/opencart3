@@ -42,7 +42,9 @@ class ModelModuleWebwinkelkeur extends Model {
                 if($settings['invite'] == 2)
                     $parameters['max_invitations_per_email'] = '1';
 
-                $post['order_data'] = json_encode($this->getOrderData($order));
+                if (!$settings['limit_order_data']) {
+                    $post['order_data'] = json_encode($this->getOrderData($order));
+                }
 
                 $url = 'http://' . $msg['API_DOMAIN'] . '/api/1.0/invitations.json?' . http_build_query($parameters);
                 $ch = curl_init($url);
