@@ -1,37 +1,24 @@
 <?php
-class ControllerModuleWebwinkelkeur extends Controller {
+class ControllerExtensionModuleWebwinkelkeur extends Controller {
     private $error = array();
 
     public function index() {
         $this->language->load('common/header');
 
-        if (defined('VERSION') && version_compare(VERSION, '2.3.0.0', '>=')) {
-            // OpenCart 2.3.0.0 doesn't trigger install(), so we do it here...
-            $this->load->model('setting/setting');
-            if (!$this->model_setting_setting->getSetting('webwinkelkeur')) {
-                $this->install();
-            }
-
-            // OpenCart 2.3+ specific paths.
-            $path_module = 'extension/module/webwinkelkeur';
-            $path_extensions = 'extension/extension';
-
-            $this->language->load('extension/module/account');
-
-            $text_extension = $this->language->get('text_extension');
-        } else {
-            // OpenCart 2.2 and older specific paths.
-            $path_module = 'module/webwinkelkeur';
-            $path_extensions = 'extension/module';
-
-            $this->language->load('module/account');
-
-            $text_extension = $this->language->get('text_module');
+        $this->load->model('setting/setting');
+        if (!$this->model_setting_setting->getSetting('webwinkelkeur')) {
+            $this->install();
         }
+        $path_module = 'extension/module/webwinkelkeur';
+        $path_extensions = 'marketplace/extension';
+
+        $this->language->load('extension/module/account');
+
+        $text_extension = $this->language->get('text_extension');
 
         $msg = @include DIR_SYSTEM . 'library/webwinkelkeur-messages.php';
 
-        $this->load->model('module/webwinkelkeur');
+        $this->load->model('extension/module/webwinkelkeur');
 
         $this->document->setTitle($msg['WEBWINKELKEUR']);
 
@@ -43,12 +30,12 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
         $settings = $this->getSettings();
 
-        $stores = $this->model_module_webwinkelkeur->getStores();
+        $stores = $this->model_extension_module_webwinkelkeur->getStores();
 
 		if($this->request->server['REQUEST_METHOD'] == 'POST') {
             if(!empty($this->request->post['selectStore'])) {
                 if($this->request->post['store_id'] == 0)
-                    $this->response->redirect($this->url->link($path_module, 'token=' . $this->session->data['token'], 'SSL'));
+                    $this->response->redirect($this->url->link($path_module, 'user_token=' . $this->session->data['user_token'], 'SSL'));
 
                 $module_id = $this->findModule($this->request->post['store_id']);
 
@@ -57,7 +44,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
                     $module_id = $this->findModule($this->request->post['store_id']);
                 }
                 $this->response->redirect($this->url->link($path_module,
-                        'token=' . $this->session->data['token'] . '&module_id=' . $module_id, 'SSL'));
+                        'user_token=' . $this->session->data['user_token'] . '&module_id=' . $module_id, 'SSL'));
             }
 
             if($this->validateForm()) {
@@ -68,7 +55,7 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
                 $new_settings = $this->cleanSettings($form_data);
                 $this->editSettings($new_settings);
-                $this->response->redirect($this->url->link($path_extensions, 'token=' . $this->session->data['token'], 'SSL'));
+                $this->response->redirect($this->url->link($path_extensions, 'user_token=' . $this->session->data['user_token'], 'SSL'));
             }
         }
 
@@ -86,22 +73,22 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
         $data['breadcrumbs'][] = array(
             'text' => $this->language->get('text_home'),
-            'href' => $this->url->link('common/dashboard', 'token=' . $this->session->data['token'], 'ssl'),
+            'href' => $this->url->link('common/dashboard', 'user_token=' . $this->session->data['user_token'], 'ssl'),
         );
 
    		$data['breadcrumbs'][] = array(
        		'text'      => $text_extension,
-			'href'      => $this->url->link($path_extensions, 'token=' . $this->session->data['token'], 'ssl'),
+			'href'      => $this->url->link($path_extensions, 'user_token=' . $this->session->data['user_token'], 'ssl'),
       		'separator' => false
    		);
 
    		$data['breadcrumbs'][] = array(
             'text'      => $msg['WEBWINKELKEUR'],
-			'href'      => $this->url->link($path_module, 'token=' . $this->session->data['token'], 'ssl'),
+			'href'      => $this->url->link($path_module, 'user_token=' . $this->session->data['user_token'], 'ssl'),
       		'separator' => ' :: '
    		);
 
-        $data['cancel'] = $this->url->link($path_extensions, 'token=' . $this->session->data['token'], 'ssl');
+        $data['cancel'] = $this->url->link($path_extensions, 'user_token=' . $this->session->data['user_token'], 'ssl');
 
         $data['button_save'] = $this->language->get('button_save');
         $data['button_cancel'] = $this->language->get('button_cancel');
@@ -117,11 +104,11 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
         $data['order_statuses'] = $this->model_localisation_order_status->getOrderStatuses();
 
-        $data['invite_errors'] = $this->model_module_webwinkelkeur->getInviteErrors();
+        $data['invite_errors'] = $this->model_extension_module_webwinkelkeur->getInviteErrors();
 
         $data['header'] = $this->load->controller('common/header') . $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
-        $this->response->setOutput($this->load->view('module/webwinkelkeur.tpl', $data));
+        $this->response->setOutput($this->load->view('extension/module/webwinkelkeur.tpl', $data));
     }
 
     private function validateForm() {
@@ -144,24 +131,24 @@ class ControllerModuleWebwinkelkeur extends Controller {
     }
 
     public function install() {
-        $this->load->model('module/webwinkelkeur');
+        $this->load->model('extension/module/webwinkelkeur');
 
-        $this->model_module_webwinkelkeur->install();
+        $this->model_extension_module_webwinkelkeur->install();
 
         $this->editSettings();
     }
 
     public function uninstall() {
-        $this->load->model('module/webwinkelkeur');
+        $this->load->model('extension/module/webwinkelkeur');
 
-        $this->model_module_webwinkelkeur->uninstall();
+        $this->model_extension_module_webwinkelkeur->uninstall();
     }
 
     private function getSettings() {
-        $this->load->model('extension/module');
+        $this->load->model('setting/module');
         if(isset($this->request->get['module_id'])) {
             $settings = array();
-            $settings = $this->model_extension_module->getModule($this->request->get['module_id']);
+            $settings = $this->model_setting_module->getModule($this->request->get['module_id']);
             return $this->defaultSettings($settings);
         }
 
@@ -224,13 +211,13 @@ class ControllerModuleWebwinkelkeur extends Controller {
     }
 
     private function editLayouts() {
-        $this->load->model('extension/module');
+        $this->load->model('setting/module');
 
         $module_id = null;
         if(isset($this->request->get['module_id'])) {
             $module_id = $this->request->get['module_id'];
         } else {
-            $modules = $this->model_extension_module->getModulesByCode('webwinkelkeur');
+            $modules = $this->model_setting_module->getModulesByCode('webwinkelkeur');
             if(!empty($modules)) {
                 $module_id = $modules[0]['module_id'];
             }
@@ -273,14 +260,14 @@ class ControllerModuleWebwinkelkeur extends Controller {
         // to add it for every layout manually.
         $this->editLayouts();
 
-        $this->load->model('extension/module');
+        $this->load->model('setting/module');
         if(isset($this->request->get['module_id'])) {
-            $modules = $this->model_extension_module->getModulesByCode('webwinkelkeur');
+            $modules = $this->model_setting_module->getModulesByCode('webwinkelkeur');
             foreach($modules as $module) {
                 if($module['module_id'] === $this->request->get['module_id'])
                     $settings['name'] = $module['name'];
             }
-            $this->model_extension_module->editModule($this->request->get['module_id'], $settings);
+            $this->model_setting_module->editModule($this->request->get['module_id'], $settings);
             return;
         }
 
@@ -296,10 +283,10 @@ class ControllerModuleWebwinkelkeur extends Controller {
 
     private function findModule($store) {
         if($store === 0) return 0;
-        $this->load->model('extension/module');
+        $this->load->model('setting/module');
 
-        foreach($this->model_extension_module->getModulesByCode('webwinkelkeur') as $module) {
-            $data = $this->model_extension_module->getModule($module['module_id']);
+        foreach($this->model_setting_module->getModulesByCode('webwinkelkeur') as $module) {
+            $data = $this->model_setting_module->getModule($module['module_id']);
             if($data['store_id'] == $store)
                 return $module['module_id'];
         }
@@ -307,10 +294,10 @@ class ControllerModuleWebwinkelkeur extends Controller {
     }
 
     private function createModule($settings) {
-        $this->load->model('extension/module');
+        $this->load->model('setting/module');
 
         $name = '';
-        $stores = $this->model_module_webwinkelkeur->getStores();
+        $stores = $this->model_setting_module_webwinkelkeur->getStores();
         foreach($stores as $store) {
             if($store['store_id'] == $settings['store_id'])
                 $name = $store['name'];
@@ -322,6 +309,6 @@ class ControllerModuleWebwinkelkeur extends Controller {
             'store_id'  => $settings['store_id'],
         ));
 
-        $this->model_extension_module->addModule('webwinkelkeur', $module_settings);
+        $this->model_setting_module->addModule('webwinkelkeur', $module_settings);
     }
 }

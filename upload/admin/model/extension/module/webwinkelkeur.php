@@ -1,5 +1,5 @@
 <?php
-class ModelModuleWebwinkelkeur extends Model {
+class ModelExtensionModuleWebwinkelkeur extends Model {
     public function install() {
         if(!in_array('webwinkelkeur_invite_sent', $this->getColumnNames('order'))) {
             $this->db->query("
