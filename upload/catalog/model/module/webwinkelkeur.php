@@ -1,4 +1,5 @@
 <?php
+require_once DIR_SYSTEM . 'library/Peschar_URLRetriever.php';
 class ModelModuleWebwinkelkeur extends Model {
 
     public function sendInvites() {
@@ -47,14 +48,8 @@ class ModelModuleWebwinkelkeur extends Model {
                 }
 
                 $url = 'http://' . $msg['API_DOMAIN'] . '/api/1.0/invitations.json?' . http_build_query($parameters);
-                $ch = curl_init($url);
-                curl_setopt_array($ch, array(
-                    CURLOPT_POST => true,
-                    CURLOPT_POSTFIELDS => http_build_query($post),
-                    CURLOPT_RETURNTRANSFER => true,
-                    CURLOPT_SSL_VERIFYPEER => false
-                ));
-                $response = curl_exec($ch);
+                $retriever = new Peschar_URLRetriever();
+                $response = $retriever->retrieve($url, $post);
                 if($this->isInviteSent($response)) {
                     $this->db->query("UPDATE `" . DB_PREFIX . "order` SET webwinkelkeur_invite_sent = 1 WHERE order_id = " . $order['order_id']);
                 } else {
