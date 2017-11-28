@@ -149,12 +149,17 @@ class ModelModuleWebwinkelkeur extends Model {
             $product_ids[] = $line['product_id'];
         }
 
+        if (empty ($product_ids)) {
+            return array();
+        }
+
         $products_query = "
           SELECT * 
           FROM `" . DB_PREFIX . "product` AS `p`
           LEFT JOIN `" . DB_PREFIX . "product_description` AS `pd`
             ON `p`.`product_id` = `pd`.`product_id`
-                AND `pd`.`language_id` = {$order['language_id']}";
+                AND `pd`.`language_id` = {$order['language_id']}
+          WHERE `p`.`product_id` IN (" . join(',', $product_ids) . ')';
         $products = $this->db->query($products_query)->rows;
 
         $base_url = $this->request->server['HTTPS']
