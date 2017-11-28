@@ -6,9 +6,7 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
         $this->language->load('common/header');
 
         $this->load->model('setting/setting');
-        if (!$this->model_setting_setting->getSetting('webwinkelkeur')) {
-            $this->install();
-        }
+
         $path_module = 'extension/module/webwinkelkeur';
         $path_extensions = 'marketplace/extension';
 
@@ -108,7 +106,7 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
 
         $data['header'] = $this->load->controller('common/header') . $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
-        $this->response->setOutput($this->load->view('extension/module/webwinkelkeur.tpl', $data));
+        $this->response->setOutput($this->load->view('extension/module/webwinkelkeur', $data));
     }
 
     private function validateForm() {
@@ -135,6 +133,7 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
 
         $this->model_extension_module_webwinkelkeur->install();
 
+        $this->createModule(array('store_id' => 0));
         $this->editSettings();
     }
 
@@ -147,7 +146,6 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
     private function getSettings() {
         $this->load->model('setting/module');
         if(isset($this->request->get['module_id'])) {
-            $settings = array();
             $settings = $this->model_setting_module->getModule($this->request->get['module_id']);
             return $this->defaultSettings($settings);
         }
@@ -261,6 +259,7 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
         $this->editLayouts();
 
         $this->load->model('setting/module');
+
         if(isset($this->request->get['module_id'])) {
             $modules = $this->model_setting_module->getModulesByCode('webwinkelkeur');
             foreach($modules as $module) {
@@ -295,9 +294,10 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
 
     private function createModule($settings) {
         $this->load->model('setting/module');
+        $this->load->model('setting/store');
 
-        $name = '';
-        $stores = $this->model_setting_module_webwinkelkeur->getStores();
+        $name = 'Default';
+        $stores = $this->model_setting_store->getStores();
         foreach($stores as $store) {
             if($store['store_id'] == $settings['store_id'])
                 $name = $store['name'];

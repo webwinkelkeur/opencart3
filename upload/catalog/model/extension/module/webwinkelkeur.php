@@ -1,6 +1,6 @@
 <?php
 require_once DIR_SYSTEM . 'library/Peschar_URLRetriever.php';
-class ModelModuleWebwinkelkeur extends Model {
+class ModelExtensionModuleWebwinkelkeur extends Model {
 
     public function sendInvites() {
         $msg = @include DIR_SYSTEM . 'library/webwinkelkeur-messages.php';
@@ -176,9 +176,9 @@ class ModelModuleWebwinkelkeur extends Model {
 
         $store_id = $this->config->get('config_store_id');
 
-        $this->load->model('extension/module');
+        $this->load->model('setting/module');
         foreach($this->getModulesByCode('webwinkelkeur') as $module) {
-            $data = $this->model_extension_module->getModule($module['module_id']);
+            $data = $this->model_setting_module->getModule($module['module_id']);
             if($data['store_id'] == $store_id)
                 return $data;
         }

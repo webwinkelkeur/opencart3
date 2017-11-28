@@ -1,0 +1,17 @@
+{% if settings is defined %}
+    <script type="text/javascript">
+        (function() {
+            {% for key, value in settings %}
+                {{ key }} = {{ value|json_encode }};
+            {% endfor %}
+            var js = document.createElement("script"); js.type = "text/javascript";
+            js.async = true; js.src = "//{{ msg.APP_DOMAIN }}/js/sidebar.js";
+            var s = document.getElementsByTagName("script")[0]; s.parentNode.insertBefore(js, s);
+        })();
+    </script>
+{% endif %}
+
+{% if rich_snippet is defined %}
+    {{ rich_snippet }}
+{% endif %}
+
