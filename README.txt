@@ -5,12 +5,12 @@ Deze module integreert de WebwinkelKeur sidebar module in uw webshop. De module
 kan eenvoudig worden geïnstalleerd. Gebruik daarvoor de onderstaande 
 installatieinstructies.
 
-De module is getest met OpenCart versies 2.0.1.0 en later.
+De module is getest met OpenCart versies 3.0.0.0 en later.
 
 U kunt de module ook laten installeren door de ontwikkelaar. Neem daarvoor per 
 e-mail contact op.
 
-(C) 2014 Albert Peschar <albert@peschar.net>
+(C) 2017 Albert Peschar <albert@peschar.net>
 
 
 Installatieinstructies
@@ -25,11 +25,11 @@ Installatieinstructies
     4. Wilt u uitnodigingen verzenden, dan moet er een cronjob worden ingesteld.  
     De cronjob moet elke avond worden uitgevoerd en deze URL aanroepen:
 
-      http://www.uw-webwinkel.nl/index.php?route=module/webwinkelkeur/cron
+      http://www.uw-webwinkel.nl/index.php?route=extension/module/webwinkelkeur/cron
 
     Hiervoor kunt u de volgende regel in uw crontab plaatsen:
 
-      30 23 * * * wget --quiet -O- 'http://www.uw-webwinkel.nl/index.php?route=module/webwinkelkeur/cron'
+      30 23 * * * wget --quiet -O- 'http://www.uw-webwinkel.nl/index.php?route=extension/module/webwinkelkeur/cron'
 
     Wanneer u de multistore ondersteuning gebruikt, dan moet de cronjob voor
     elke winkel worden ingesteld.
