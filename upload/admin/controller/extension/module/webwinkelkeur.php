@@ -32,9 +32,6 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
 
 		if($this->request->server['REQUEST_METHOD'] == 'POST') {
             if(!empty($this->request->post['selectStore'])) {
-                if($this->request->post['store_id'] == 0)
-                    $this->response->redirect($this->url->link($path_module, 'user_token=' . $this->session->data['user_token'], 'SSL'));
-
                 $module_id = $this->findModule($this->request->post['store_id']);
 
                 if(is_null($module_id)) {
@@ -281,7 +278,6 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
     }
 
     private function findModule($store) {
-        if($store === 0) return 0;
         $this->load->model('setting/module');
 
         foreach($this->model_setting_module->getModulesByCode('webwinkelkeur') as $module) {
@@ -296,11 +292,13 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
         $this->load->model('setting/module');
         $this->load->model('setting/store');
 
-        $name = 'Default';
         $stores = $this->model_setting_store->getStores();
         foreach($stores as $store) {
             if($store['store_id'] == $settings['store_id'])
                 $name = $store['name'];
+        }
+        if (!isset ($name)) {
+            $name = $this->config->get('config_name');
         }
 
         $data = $this->defaultSettings();
