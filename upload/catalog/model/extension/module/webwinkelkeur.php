@@ -35,7 +35,7 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
                     'delay'     => $settings['invite_delay'],
                     'language'      => str_replace('-', '_', $order['language_code']),
                     'customer_name' => "$order[payment_firstname] $order[payment_lastname]",
-                    'phones' => [$order['telephone']],
+                    'phone_numbers' => [$order['telephone']],
                     'client'    => 'opencart2',
                     'platform_version' => VERSION,
                     'plugin_version' => '1.1'
