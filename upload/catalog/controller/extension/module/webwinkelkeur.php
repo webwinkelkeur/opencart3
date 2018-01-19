@@ -25,6 +25,7 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
         $data['msg'] = $msg;
 
         $data['run_cron'] = $this->model_extension_module_webwinkelkeur->shouldRunCron();
+        $data['cron_url'] = $this->url->link('extension/module/webwinkelkeur/cron', '', true);
 
         if(!empty($settings['javascript'])) {
             $js_settings = array(
