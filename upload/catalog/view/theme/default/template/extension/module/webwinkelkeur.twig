@@ -1,3 +1,11 @@
+{% if run_cron %}
+    <div style="
+        position: absolute;
+        top: -9999em;
+        left: -9999em;
+        background: url(/index.php?route=extension/module/webwinkelkeur/cron);
+"></div>
+{% endif %}
 {% if settings is defined %}
     <script type="text/javascript">
         (function() {

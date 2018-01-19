@@ -24,6 +24,8 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
         $data = array();
         $data['msg'] = $msg;
 
+        $data['run_cron'] = $this->model_extension_module_webwinkelkeur->shouldRunCron();
+
         if(!empty($settings['javascript'])) {
             $js_settings = array(
                 '_webwinkelkeur_id' => (int) $settings['shop_id'],
@@ -44,6 +46,7 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
 
         ignore_user_abort(true);
 
+        $this->model_extension_module_webwinkelkeur->markCronRun();
         $this->model_extension_module_webwinkelkeur->sendInvites();
     }
 

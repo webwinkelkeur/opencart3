@@ -22,15 +22,4 @@ Installatieinstructies
 
     3. Vul uw webwinkel ID en API key in en configureer de module.
 
-    4. Wilt u uitnodigingen verzenden, dan moet er een cronjob worden ingesteld.  
-    De cronjob moet elke avond worden uitgevoerd en deze URL aanroepen:
-
-      http://www.uw-webwinkel.nl/index.php?route=extension/module/webwinkelkeur/cron
-
-    Hiervoor kunt u de volgende regel in uw crontab plaatsen:
-
-      30 23 * * * wget --quiet -O- 'http://www.uw-webwinkel.nl/index.php?route=extension/module/webwinkelkeur/cron'
-
-    Wanneer u de multistore ondersteuning gebruikt, dan moet de cronjob voor
-    elke winkel worden ingesteld.
 

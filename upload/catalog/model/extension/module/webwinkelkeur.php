@@ -203,4 +203,35 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
 
         return $query->rows;
     }
+
+    public function shouldRunCron() {
+        $this->load->model('setting/setting');
+        $store_id = $this->config->get('config_store_id');
+        $settings = $this->model_setting_setting->getSetting('webwinkelkeur_cron', $store_id);
+        if (!isset ($settings['last_cron_run'])) {
+            $this->markCronRun();
+            return false;
+        }
+        return $settings['last_cron_run'] + 3600 < time();
+    }
+
+    public function markCronRun() {
+        $now = time();
+        $store_id = (int)$this->config->get('config_store_id');
+        $this->db->query("
+            UPDATE `" . DB_PREFIX . "setting` 
+            SET `value` = $now 
+            WHERE `store_id` = $store_id 
+                AND `code` = 'webwinkelkeur_cron' 
+                AND `key` = 'last_cron_run'
+        ");
+        if ($this->db->countAffected() == 0) {
+            $this->db->query("
+                INSERT INTO `" . DB_PREFIX . "setting` 
+                (`store_id`, `code`, `key`, `value`, `serialized`)
+                VALUES
+                ($store_id, 'webwinkelkeur_cron', 'last_cron_run', $now, 0)
+            ");
+        }
+    }
 }
