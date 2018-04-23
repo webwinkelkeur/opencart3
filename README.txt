@@ -18,8 +18,11 @@ Installatieinstructies
 
     1. Upload de bestanden in de map upload/ naar de webserver.
 
-    2. De module kan nu worden ingeschakeld in de administratieinterface.
+    2. Betreft het een update van een oudere versie van de module?
+       Leeg dan de "Theme cache" in OpenCart via het tandwiel op het dashboard.
 
-    3. Vul uw webwinkel ID en API key in en configureer de module.
+    3. De module kan nu worden ingeschakeld in de administratieinterface.
+
+    4. Vul uw webwinkel ID en API key in en configureer de module.
 
 
