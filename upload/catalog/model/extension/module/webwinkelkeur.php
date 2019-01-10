@@ -37,7 +37,7 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
                     'customer_name' => "$order[payment_firstname] $order[payment_lastname]",
                     'phone_numbers' => [$order['telephone']],
                     'order_total' => $order['total'],
-                    'client'    => 'opencart2',
+                    'client'    => 'opencart3',
                     'platform_version' => VERSION,
                     'plugin_version' => '1.1'
                 );
