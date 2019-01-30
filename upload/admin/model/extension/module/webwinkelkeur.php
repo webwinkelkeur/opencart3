@@ -66,13 +66,26 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
 
     public function getInviteErrors() {
         $until = time() - 86400 * 3;
+
         $query = $this->db->query("
             SELECT *
             FROM `" . DB_PREFIX . "webwinkelkeur_invite_error`
             WHERE time > $until
             ORDER BY time
         ");
-        return $query->rows;
+
+        return array_map(function ($row) {
+            try {
+                $row['time'] = new DateTimeImmutable('@' . $row['time']);
+            } catch (Exception $e) {
+                $row['time'] = new DateTimeImmutable('@0');
+            }
+
+            $response = json_decode($row['response'], true);
+            $row['message'] = empty($response['message']) ? $row['response'] : $response['message'];
+
+            return $row;
+        }, $query->rows);
     }
 
     public function getStores() {

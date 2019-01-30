@@ -193,7 +193,7 @@
         </div>
       {% endfor %}
     </form>
-    {% if invite_erros %}
+    {% if invite_errors %}
       <div class="panel panel-default">
         <div class="panel-heading">
           <h3 class="panel-title"><i class="fa fa-exclamation-triangle"></i>
@@ -205,11 +205,11 @@
             {% for invite_error in invite_errors %}
               <tr>
                 <td style="padding-right:10px;">
-                  {{ date('d-m-Y H:i', invite_error.time) }}
+                  {{ invite_error.time|date("Y-m-d H:i:s") }}
                 </td>
                 <td>
-                  {% if invite_error.response %}
-                      {{ invite_error.response }}
+                  {% if invite_error.message %}
+                      {{ invite_error.message }}
                   {% else %}
                       {{ msg.INVITE_GENERIC_ERROR }}
                   {% endif %}
