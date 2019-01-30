@@ -21,6 +21,15 @@
     </div>
   </div>
   <div class="container-fluid">
+    {% if version != '$VERSION$' %}
+    <div class="alert alert-danger">
+      <p>
+        You need to refresh the OpenCart 3 theme cache after updating the {{ msg.WEBWINKELKEUR }} module.
+        The template version $VERSION$ does not match the module version {{ version }}.
+        Refreshing the cache can be done on the dashboard.
+      </p>
+    </div>
+    {% endif %}
     <form action="" method="post" enctype="multipart/form-data" class="form-horizontal" id="form" name="webwinkelkeur">
       {% if stores|length > 1 %}
         <div class="panel panel-default">
@@ -221,7 +230,7 @@
       </div>
     {% endif %}
     <p class="text-center">
-        WebwinkelKeur-integratie versie $VERSION$
+      WebwinkelKeur {{ version }}
     </p>
   </div>
 </div>

@@ -103,6 +103,8 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
 
         $data['header'] = $this->load->controller('common/header') . $this->load->controller('common/column_left');
         $data['footer'] = $this->load->controller('common/footer');
+        $data['version'] = '$VERSION$';
+
         $this->response->setOutput($this->load->view('extension/module/webwinkelkeur', $data));
     }
 
