@@ -55,7 +55,7 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
                 'order_total'      => $order['total'],
                 'client'           => 'opencart3',
                 'platform_version' => VERSION,
-                'plugin_version'   => '1.1'
+                'plugin_version'   => '$VERSION$',
             );
 
             if ($settings['invite'] == 2) {
