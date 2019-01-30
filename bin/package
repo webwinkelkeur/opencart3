@@ -8,5 +8,17 @@ rm -rf dist
 mkdir -p dist
 
 pathspec="README.txt upload"
+version="$(git describe)"
+out="$PWD/dist/opencart3-webwinkelkeur-$version.zip"
 
-git archive -o dist/opencart3-webwinkelkeur.zip HEAD $pathspec
+echo "Packaging version $version" >&2
+
+tmp="$(mktemp -d)"
+cleanup() { rm -rf "$tmp"; }
+trap cleanup EXIT
+
+git archive HEAD $pathspec | tar xf - -C "$tmp"
+cd "$tmp"
+grep -lFR '$VERSION$' . | xargs perl -p -i -e 's~\$VERSION\$~'$version'~g'
+
+zip -qr9 "$out" *
