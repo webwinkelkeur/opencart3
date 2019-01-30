@@ -2,18 +2,28 @@
 require_once DIR_SYSTEM . 'library/Peschar_URLRetriever.php';
 class ModelExtensionModuleWebwinkelkeur extends Model {
 
-    public function sendInvites() {
+    public function sendInvites($debug = false) {
         $msg = @include DIR_SYSTEM . 'library/webwinkelkeur-messages.php';
 
         $settings = $this->getSettings();
 
-        if(empty($settings['shop_id']) ||
-           empty($settings['api_key']) ||
-           empty($settings['invite'])
-        )
-            return;
+        if (empty($settings['shop_id'])) {
+            throw new RuntimeException("shop_id not set");
+        }
 
-        foreach($this->getOrdersToInvite($settings) as $order) {
+        if (empty($settings['api_key'])) {
+            throw new RuntimeException("api_key not set");
+        }
+
+        if (empty($settings['invite'])) {
+            throw new RuntimeException("invite not set");
+        }
+
+        $ok = 0;
+        $errors = 0;
+        $conflicts = 0;
+
+        foreach ($this->getOrdersToInvite($settings, $debug) as $order) {
             $this->db->query("
                 UPDATE `" . DB_PREFIX . "order`
                 SET
@@ -24,43 +34,58 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
                     AND webwinkelkeur_invite_tries = " . $order['webwinkelkeur_invite_tries'] . "
                     AND webwinkelkeur_invite_time = " . $order['webwinkelkeur_invite_time'] . "
             ");
-            if($this->db->countAffected()) {
-                $parameters = array(
-                    'id'        => $settings['shop_id'],
-                    'code'  => $settings['api_key']
-                );
-                $post = array(
-                    'email'     => $order['email'],
-                    'order'     => $order['order_id'],
-                    'delay'     => $settings['invite_delay'],
-                    'language'      => str_replace('-', '_', $order['language_code']),
-                    'customer_name' => "$order[payment_firstname] $order[payment_lastname]",
-                    'phone_numbers' => [$order['telephone']],
-                    'order_total' => $order['total'],
-                    'client'    => 'opencart3',
-                    'platform_version' => VERSION,
-                    'plugin_version' => '1.1'
-                );
-                if($settings['invite'] == 2)
-                    $parameters['max_invitations_per_email'] = '1';
 
-                if (!$settings['limit_order_data']) {
-                    $post['order_data'] = json_encode($this->getOrderData($order));
-                }
+            if (!$this->db->countAffected()) {
+                $conflicts++;
+                continue;
+            }
 
-                $url = 'https://' . $msg['API_DOMAIN'] . '/api/1.0/invitations.json?' . http_build_query($parameters);
-                $retriever = new Peschar_URLRetriever();
-                $response = $retriever->retrieve($url, $post);
-                if($this->isInviteSent($response)) {
-                    $this->db->query("UPDATE `" . DB_PREFIX . "order` SET webwinkelkeur_invite_sent = 1 WHERE order_id = " . $order['order_id']);
-                } else {
-                    $this->db->query("INSERT INTO `" . DB_PREFIX . "webwinkelkeur_invite_error` SET url = '" . $this->db->escape($url) . "', response = '" . $this->db->escape($response) . "', time = " . time());
-                }
+            $parameters = array(
+                'id'   => $settings['shop_id'],
+                'code' => $settings['api_key']
+            );
+
+            $post = array(
+                'email'            => $order['email'],
+                'order'            => $order['order_id'],
+                'delay'            => $settings['invite_delay'],
+                'language'         => str_replace('-', '_', $order['language_code']),
+                'customer_name'    => "$order[payment_firstname] $order[payment_lastname]",
+                'phone_numbers'    => [$order['telephone']],
+                'order_total'      => $order['total'],
+                'client'           => 'opencart3',
+                'platform_version' => VERSION,
+                'plugin_version'   => '1.1'
+            );
+
+            if ($settings['invite'] == 2) {
+                $parameters['max_invitations_per_email'] = '1';
+            }
+
+            if (!$settings['limit_order_data']) {
+                $post['order_data'] = json_encode($this->getOrderData($order));
+            }
+
+            $url = 'https://' . $msg['API_DOMAIN'] . '/api/1.0/invitations.json?' . http_build_query($parameters);
+            $retriever = new Peschar_URLRetriever();
+            $response = $retriever->retrieve($url, $post);
+            if($this->isInviteSent($response)) {
+                $ok++;
+                $this->db->query("UPDATE `" . DB_PREFIX . "order` SET webwinkelkeur_invite_sent = 1 WHERE order_id = " . $order['order_id']);
+            } else {
+                $errors++;
+                $this->db->query("INSERT INTO `" . DB_PREFIX . "webwinkelkeur_invite_error` SET url = '" . $this->db->escape($url) . "', response = '" . $this->db->escape($response) . "', time = " . time());
             }
         }
+
+        if ($errors || $conflicts) {
+            throw new RuntimeException("ok: $ok, errors: $errors, conflicts: $conflicts");
+        }
+
+        return $ok;
     }
 
-    private function getOrdersToInvite($settings) {
+    private function getOrdersToInvite($settings, $debug = false) {
         $max_time = time() - 1800;
 
         $where = array();
@@ -77,7 +102,7 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
         else
             $where = implode(' AND ', $where);
 
-        $query = $this->db->query($q="
+        $sql = "
             SELECT o.*, l.code as language_code
             FROM `" . DB_PREFIX . "order` o
             LEFT JOIN `" . DB_PREFIX . "language` l USING(language_id)
@@ -86,7 +111,15 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
                 AND o.webwinkelkeur_invite_tries < 10
                 AND o.webwinkelkeur_invite_time < $max_time
                 AND $where
-        ");
+        ";
+
+        $sql = preg_replace('~^\s*\n|(?<=\n)\s*$~', '', $sql);
+
+        if ($debug) {
+            echo "<p>Select orders:<br><pre>", htmlentities($sql, ENT_QUOTES, 'UTF-8'), "</pre></p>";
+        }
+
+        $query = $this->db->query($sql);
 
         return $query->rows;
     }
