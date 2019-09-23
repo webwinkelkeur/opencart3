@@ -30,7 +30,6 @@ return array(
 'INVITE_GENERIC_ERROR' => 'De Webwinkelkeur-server kon niet worden bereikt.',
 
 // catalog
-'PESCHAR_PING' => 'WebwinkelKeur OpenCart 2',
 'API_DOMAIN' => 'dashboard.webwinkelkeur.nl',
 'APP_DOMAIN' => 'www.webwinkelkeur.nl'
 );

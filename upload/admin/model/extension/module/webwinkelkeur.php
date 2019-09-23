@@ -1,5 +1,16 @@
 <?php
 class ModelExtensionModuleWebwinkelkeur extends Model {
+
+    private $eventTriggers = [
+        'catalog/view/common/header/after',
+    ];
+
+    public function __construct($registry) {
+        parent::__construct($registry);
+
+        $this->load->model('setting/event');
+    }
+
     public function install() {
         if(!in_array('webwinkelkeur_invite_sent', $this->getColumnNames('order'))) {
             $this->db->query("
@@ -35,6 +46,27 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
                 INDEX time (time)
             ) ENGINE=MyISAM DEFAULT CHARSET=utf8
         ");
+
+        $this->installEvents();
+    }
+
+    public function installEvents() {
+        foreach ($this->eventTriggers as $trigger) {
+            $this->installEvent($trigger);
+        }
+    }
+
+    private function installEvent($trigger) {
+        $code = $this->getEventCode($trigger);
+
+        if ($this->model_setting_event->getEventByCode($code)) {
+            return;
+        }
+
+        $method = 'event_' . preg_replace('~^catalog_~', '', str_replace('/', '_', $trigger));
+        $action = 'extension/module/webwinkelkeur/' . $method;
+
+        $this->model_setting_event->addEvent($code, $trigger, $action);
     }
 
     public function uninstall() {
@@ -51,9 +83,11 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
         }
 
         $this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "webwinkelkeur_invite_error`");
+
+        $this->uninstallEvents();
     }
 
-    public function getColumnNames($table) {
+    private function getColumnNames($table) {
         $query = $this->db->query("DESCRIBE `" . DB_PREFIX . $table . "`");
 
         $column_names = array();
@@ -62,6 +96,16 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
             $column_names[] = $column['Field'];
 
         return $column_names;
+    }
+
+    private function uninstallEvents() {
+        foreach ($this->eventTriggers as $trigger) {
+            $this->model_setting_event->deleteEventByCode($this->getEventCode($trigger));
+        }
+    }
+
+    private function getEventCode($trigger) {
+        return 'webwinkelkeur/' . $trigger;
     }
 
     public function getInviteErrors() {
@@ -98,4 +142,5 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
         ");
         return $query->rows;
     }
+
 }

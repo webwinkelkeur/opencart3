@@ -1,59 +1,51 @@
 <?php
 
-require_once DIR_SYSTEM . 'library/Peschar_Ping.php';
-
 class ControllerExtensionModuleWebwinkelkeur extends Controller {
 
-    public function index($dummy) {
+    private $settings;
+    private $msg;
 
-        $msg = @include DIR_SYSTEM . 'library/webwinkelkeur-messages.php';
+    public function __construct($registry) {
+        parent::__construct($registry);
 
         $this->load->model('extension/module/webwinkelkeur');
 
+        $this->settings = $this->model_extension_module_webwinkelkeur->getSettings();
+        $this->msg = @include DIR_SYSTEM . 'library/webwinkelkeur-messages.php';
+    }
+
+    public function index($dummy) {
         $modules = $this->model_extension_module_webwinkelkeur->getModulesByCode('webwinkelkeur');
-        if(empty($dummy) && count($modules))
+
+        if (empty($dummy) && count($modules))
             return;
 
-        $settings = $this->model_extension_module_webwinkelkeur->getSettings();
-
-        $this->silence(array('Peschar_Ping', 'run'), $msg['PESCHAR_PING'], DIR_SYSTEM . '/..');
-
-        if(empty($settings['shop_id']))
+        if (empty($this->settings['shop_id']))
             return;
 
         $data = array();
-        $data['msg'] = $msg;
 
-        $data['run_cron'] = $this->model_extension_module_webwinkelkeur->shouldRunCron();
-        $data['cron_url'] = $this->url->link('extension/module/webwinkelkeur/cron', '', true);
-
-        if(!empty($settings['javascript'])) {
-            $js_settings = array(
-                '_webwinkelkeur_id' => (int) $settings['shop_id'],
-            );
-            $data['settings'] = $js_settings;
+        if (empty($this->settings['rich_snippet'])) {
+            return '';
         }
 
-        if(!empty($settings['rich_snippet'])) {
-            $html = $this->silence(array($this, 'getRichSnippet'), $settings);
-            if($html) $data['rich_snippet'] = $html;
+        $html = @$this->getRichSnippet();
+
+        if (!$html) {
+            return '';
         }
 
-        return $this->load->view('extension/module/webwinkelkeur', $data);
+        return $html;
     }
 
     public function cron() {
-        $this->load->model('extension/module/webwinkelkeur');
-
         ignore_user_abort(true);
 
         $this->model_extension_module_webwinkelkeur->markCronRun();
         $this->model_extension_module_webwinkelkeur->sendInvites();
     }
 
-    private function getRichSnippet($settings) {
-        $msg = @include DIR_SYSTEM . 'library/webwinkelkeur-messages.php';
-
+    private function getRichSnippet() {
         $tmp_dir = @sys_get_temp_dir();
         if(!is_writable($tmp_dir))
             $tmp_dir = '/tmp';
@@ -61,7 +53,7 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
             return;
 
         $url = sprintf('http://%s/shop_rich_snippet.php?id=%s',
-            $msg['APP_DOMAIN'], (int) $settings['shop_id']);
+            $this->msg['APP_DOMAIN'], (int) $this->settings['shop_id']);
 
         $cache_file = $tmp_dir . DIRECTORY_SEPARATOR . 'WEBWINKELKEUR_'
             . md5(__FILE__) . '_' . md5($url);
@@ -96,18 +88,42 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
             return $data['content'];
     }
 
-    private function silence($method) {
-        global $config;
-        $args = func_get_args();
-        $args = array_slice($args, 1);
-        $do = method_exists($config, 'get') && method_exists($config, 'set')
-            && ($display = $config->get('config_error_display'));
-        if($do)
-            $config->set('config_error_display', false);
-        $ret = call_user_func_array($method, $args);
-        if($do)
-            $config->set('config_error_display', $display);
-        return $ret;
+    public function event_view_common_header_after($route, $data, &$output) {
+        $output .= $this->getScript();
+        $output .= $this->getCronTrigger();
+    }
+
+    private function getScript() {
+        if (empty($this->settings['javascript'])) {
+            return $this->consoleLog("WebwinkelKeur: JavaScript integration is disabled");
+        }
+
+        if (empty($this->settings['shop_id'])) {
+            return $this->consoleLog("WebwinkelKeur: Shop ID is empty");
+        }
+
+        return
+            '<script>_webwinkelkeur_id=' . (int) $this->settings['shop_id'] . '</script>' .
+            '<script async src="https://' . $this->msg['APP_DOMAIN'] . '/js/sidebar.js"></script>';
+
+        return $o;
+    }
+
+    private function consoleLog($message) {
+        return sprintf('<script>console.log(%s)</script>', json_encode($message));
+    }
+
+    private function getCronTrigger() {
+        if (!$this->model_extension_module_webwinkelkeur->shouldRunCron()) {
+            return '';
+        }
+
+        $url = $this->url->link('extension/module/webwinkelkeur/cron', '', true);
+
+        return sprintf(
+            '<script>(function(i){i.src=%s;})(new Image)</script>',
+            json_encode(html_entity_decode($url, ENT_QUOTES, 'UTF-8'))
+        );
     }
 
 }

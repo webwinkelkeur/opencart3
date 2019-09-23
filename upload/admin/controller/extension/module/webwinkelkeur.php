@@ -18,6 +18,8 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
 
         $this->load->model('extension/module/webwinkelkeur');
 
+        $this->model_extension_module_webwinkelkeur->installEvents();
+
         $this->document->setTitle($msg['WEBWINKELKEUR']);
 
         $data = array();
@@ -207,56 +209,7 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
         return $new;
     }
 
-    private function editLayouts() {
-        $this->load->model('setting/module');
-
-        $module_id = null;
-        if(isset($this->request->get['module_id'])) {
-            $module_id = $this->request->get['module_id'];
-        } else {
-            $modules = $this->model_setting_module->getModulesByCode('webwinkelkeur');
-            if(!empty($modules)) {
-                $module_id = $modules[0]['module_id'];
-            }
-        }
-
-        $module_code = 'webwinkelkeur';
-        if(!is_null($module_id))
-            $module_code = $module_code . '.' . $module_id;
-
-        $this->load->model('design/layout');
-
-        $layouts = $this->model_design_layout->getLayouts();
-        foreach($layouts as $layout) {
-            $layout_module = $this->model_design_layout->getLayoutModules($layout['layout_id']);
-            foreach($layout_module as $index => $module) {
-                if($module['code'] === $module_code)
-                    continue 2;
-
-                if(strstr($module['code'], 'webwinkelkeur'))
-                    unset($layout_module[$index]);
-            }
-            $layout_module[] = array(
-                'code'       => $module_code,
-                'position'   => 'content_bottom',
-                'sort_order' => 0,
-            );
-
-            $new_layout = array(
-                'name'           => $layout['name'],
-                'layout_route'   => $this->model_design_layout->getLayoutRoutes($layout['layout_id']),
-                'layout_module'  => $layout_module,
-            );
-
-            $this->model_design_layout->editLayout($layout['layout_id'], $new_layout);
-        }
-    }
-
     private function editSettings(array $settings = array()) {
-        // We want to execute our module on every page. This is why we have
-        // to add it for every layout manually.
-        $this->editLayouts();
-
         $this->load->model('setting/module');
 
         if(isset($this->request->get['module_id'])) {

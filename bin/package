@@ -8,7 +8,7 @@ rm -rf dist
 mkdir -p dist
 
 pathspec="README.txt upload"
-version="$(git describe --tags)"
+version="$(git describe --tags --match 'v*')"
 out="$PWD/dist/opencart3-webwinkelkeur-$version.zip"
 
 echo "Packaging version $version" >&2
