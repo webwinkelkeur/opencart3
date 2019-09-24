@@ -6,10 +6,8 @@ cd "$(dirname "$0")/.."
 git push origin master
 git push --tags origin
 
-version="$(git describe --tags --match 'v*')"
-if [[ $version = "" ]]; then
-    echo "No version?" >&2
-    exit 1
+version="$(git describe --tags --match 'v*' --exact-match)"
+if [[ $version != "" ]]; then
+    ./bin/package
+    hub release create -a ./dist/opencart3-webwinkelkeur-$version.zip -m $version $version
 fi
-./bin/package
-hub release create -a ./dist/opencart3-webwinkelkeur-$version.zip -m $version $version
