@@ -2,14 +2,9 @@
 class ModelExtensionModuleWebwinkelkeur extends Model {
 
     private $eventTriggers = [
-        'catalog/view/common/header/after',
+        'catalog/view/common/header/after' => 'event_view_common_header_after',
+        'catalog/view/*/template/common/header/after' => 'event_view_common_header_after',
     ];
-
-    public function __construct($registry) {
-        parent::__construct($registry);
-
-        $this->load->model('setting/event');
-    }
 
     public function install() {
         if(!in_array('webwinkelkeur_invite_sent', $this->getColumnNames('order'))) {
@@ -51,22 +46,30 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
     }
 
     public function installEvents() {
-        foreach ($this->eventTriggers as $trigger) {
-            $this->installEvent($trigger);
+        foreach ($this->eventTriggers as $trigger => $method) {
+            $this->installEvent($trigger, $method);
         }
     }
 
-    private function installEvent($trigger) {
+    private function installEvent($trigger, $method) {
         $code = $this->getEventCode($trigger);
+        $action = 'extension/module/webwinkelkeur/' . $method;
 
-        if ($this->model_setting_event->getEventByCode($code)) {
+        if ($this->db->query("
+            SELECT 1
+            FROM `" . DB_PREFIX . "event`
+            WHERE
+                `trigger` = '" . $this->db->escape($trigger) . "'
+                AND `action` = '" . $this->db->escape($action) . "'
+        ")->row) {
             return;
         }
 
-        $method = 'event_' . preg_replace('~^catalog_~', '', str_replace('/', '_', $trigger));
-        $action = 'extension/module/webwinkelkeur/' . $method;
+        $this->getEventModel()->addEvent($code, $trigger, $action);
+    }
 
-        $this->model_setting_event->addEvent($code, $trigger, $action);
+    private function getEventCode($trigger) {
+        return md5('webwinkelkeur/' . $trigger);
     }
 
     public function uninstall() {
@@ -99,13 +102,24 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
     }
 
     private function uninstallEvents() {
-        foreach ($this->eventTriggers as $trigger) {
-            $this->model_setting_event->deleteEventByCode($this->getEventCode($trigger));
-        }
+        $this->db->query("
+            DELETE FROM `" . DB_PREFIX . "event`
+            WHERE `action` LIKE 'extension/module/webwinkelkeur/%'
+        ");
     }
 
-    private function getEventCode($trigger) {
-        return 'webwinkelkeur/' . $trigger;
+    private function getEventModel() {
+        try {
+            $this->load->model('setting/event');
+            return $this->model_setting_event;
+        } catch (Exception $e) {}
+
+        try {
+            $this->load->model('extension/event');
+            return $this->model_extension_event;
+        } catch (Exception $e) {}
+
+        throw new RuntimeException("Failed to load either setting/event or extension/event model");
     }
 
     public function getInviteErrors() {

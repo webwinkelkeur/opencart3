@@ -89,6 +89,7 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
     }
 
     public function event_view_common_header_after($route, $data, &$output) {
+        $output .= $this->consoleLog('WebwinkelKeur: OpenCart module $VERSION$ loaded');
         $output .= $this->getScript();
         $output .= $this->getCronTrigger();
     }

@@ -2,6 +2,18 @@
 require_once DIR_SYSTEM . 'library/Peschar_URLRetriever.php';
 class ModelExtensionModuleWebwinkelkeur extends Model {
 
+    public function __construct($registry) {
+        parent::__construct($registry);
+
+        try {
+            $this->load->model('setting/module');
+        } catch (Exception $e) {
+            $this->load->model('extension/module');
+            $this->model_setting_module = $this->model_extension_module;
+        }
+        $this->load->model('setting/setting');
+    }
+
     public function sendInvites($debug = false) {
         $msg = @include DIR_SYSTEM . 'library/webwinkelkeur-messages.php';
 
@@ -206,11 +218,8 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
     }
 
     public function getSettings() {
-        $this->load->model('setting/setting');
-
         $store_id = $this->config->get('config_store_id');
 
-        $this->load->model('setting/module');
         foreach($this->getModulesByCode('webwinkelkeur') as $module) {
             $data = $this->model_setting_module->getModule($module['module_id']);
             if($data['store_id'] == $store_id)
@@ -238,7 +247,6 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
     }
 
     public function shouldRunCron() {
-        $this->load->model('setting/setting');
         $store_id = $this->config->get('config_store_id');
         $settings = $this->model_setting_setting->getSetting('webwinkelkeur_cron', $store_id);
         if (!isset ($settings['last_cron_run'])) {
