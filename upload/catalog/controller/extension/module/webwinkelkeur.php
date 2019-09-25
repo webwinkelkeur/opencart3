@@ -49,6 +49,8 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
             http_response_code(500);
             echo htmlentities($e->getMessage());
         }
+
+        echo "ok";
     }
 
     private function getRichSnippet() {
