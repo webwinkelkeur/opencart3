@@ -42,7 +42,13 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
         ignore_user_abort(true);
 
         $this->model_extension_module_webwinkelkeur->markCronRun();
-        $this->model_extension_module_webwinkelkeur->sendInvites();
+
+        try {
+            $this->model_extension_module_webwinkelkeur->sendInvites();
+        } catch (RuntimeException $e) {
+            http_response_code(500);
+            echo htmlentities($e->getMessage());
+        }
     }
 
     private function getRichSnippet() {

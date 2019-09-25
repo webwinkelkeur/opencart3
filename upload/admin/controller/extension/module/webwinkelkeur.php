@@ -184,6 +184,7 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
             'invite'           => 0,
             'limit_order_data' => false,
             'invite_delay'     => 7,
+            'invite_first_order_id' => $this->getLastOrderID() + 1,
             'javascript'       => true,
             'rich_snippet'     => false,
             'order_statuses'   => array(3, 5),
@@ -201,12 +202,18 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
             'invite'           => (int) $data['invite'],
             'limit_order_data' => !!$data['limit_order_data'],
             'invite_delay'     => (int) $data['invite_delay'],
+            'invite_first_order_id' => (int) $data['invite_first_order_id'],
             'store_id'         => (int) $data['store_id'],
             'javascript'       => !!$data['javascript'],
             'rich_snippet'     => !!$data['rich_snippet'],
             'order_statuses'   => empty($data['order_statuses']) ? array() : $this->cleanIntegerArray($data['order_statuses']),
             'status'           => !!$data['status'],
         );
+    }
+
+    private function getLastOrderID() {
+        $result = $this->db->query("SELECT MAX(order_id) v FROM `" . DB_PREFIX . "order`");
+        return $result->row ? (int) $result->row['v'] : 0;
     }
 
     private function cleanIntegerArray($array) {

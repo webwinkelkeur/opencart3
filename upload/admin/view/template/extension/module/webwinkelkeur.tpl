@@ -145,6 +145,18 @@
           </div>
           <div class="form-group">
             <label class="col-sm-2 control-label">
+            <span data-toggle="tooltip" title="<?= $msg['FIRST_ORDER_ID_TITLE']; ?>">
+              <?= $msg['FIRST_ORDER_ID']; ?>
+            </span>
+            </label>
+            <div class="col-sm-10">
+              <input type="number" required size="2" class="form-control"
+                     value="<?= $store['settings']['invite_first_order_id']; ?>"
+                     name="store[invite_first_order_id]">
+            </div>
+          </div>
+          <div class="form-group">
+            <label class="col-sm-2 control-label">
             <span data-toggle="tooltip" title="<?= $msg['RICH_SNIPPET_TITLE']; ?>">
               <?= $msg['RICH_SNIPPET']; ?>
             </span>
@@ -193,7 +205,7 @@
     </div>
     <?php endif; ?>
     <p class="text-center">
-      WebwinkelKeur <?= $version; ?>
+      <?= $msg['WEBWINKELKEUR']; ?> <?= $version; ?>
     </p>
   </div>
 </div>

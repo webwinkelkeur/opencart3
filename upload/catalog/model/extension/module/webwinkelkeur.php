@@ -31,6 +31,10 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
             throw new RuntimeException("invite not set");
         }
 
+        if (empty($settings['invite_first_order_id'])) {
+            throw new RuntimeException("invite_first_order_id not set");
+        }
+
         $ok = 0;
         $errors = 0;
         $conflicts = 0;
@@ -108,6 +112,8 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
             $where[] = '0';
         else
             $where[] = 'o.order_status_id IN (' . implode(',', array_map('intval', $settings['order_statuses'])) . ')';
+
+        $where[] = 'o.order_id >= ' . (int) $settings['invite_first_order_id'];
 
         if(empty($where))
             $where = '0';

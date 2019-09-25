@@ -28,8 +28,6 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
             ");
         }
 
-        $this->db->query("UPDATE `" . DB_PREFIX . "order` SET webwinkelkeur_invite_sent = 1");
-
         $this->db->query("DROP TABLE IF EXISTS `" . DB_PREFIX . "webwinkelkeur_invite_error`");
 
         $this->db->query("
