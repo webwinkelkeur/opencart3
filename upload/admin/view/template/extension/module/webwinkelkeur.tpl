@@ -150,7 +150,7 @@
             </span>
             </label>
             <div class="col-sm-10">
-              <input type="number" required size="2" class="form-control"
+              <input type="number" required min="1" size="2" class="form-control"
                      value="<?= $store['settings']['invite_first_order_id']; ?>"
                      name="store[invite_first_order_id]">
             </div>

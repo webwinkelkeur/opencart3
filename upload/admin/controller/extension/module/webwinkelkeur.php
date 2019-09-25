@@ -65,6 +65,7 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
 
                 $new_settings = $this->cleanSettings($form_data);
                 $this->editSettings($new_settings);
+                $this->fixUnsentOrders($new_settings['store_id'], $new_settings['invite_first_order_id']);
                 $this->response->redirect($this->link($path_extensions));
             }
         }
@@ -278,6 +279,22 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
     private function link($action, array $params = []) {
         $params += array_intersect_key($this->request->get, array_flip(['token', 'user_token']));
         return $this->url->link($action, http_build_query($params), true);
+    }
+
+    private function fixUnsentOrders($store_id, $first_order_id) {
+        if (!(int) $first_order_id) {
+            return;
+        }
+
+        $this->db->query("
+            UPDATE `" . DB_PREFIX . "order`
+            SET
+                webwinkelkeur_invite_sent = 0
+            WHERE
+                webwinkelkeur_invite_sent = 1
+                AND webwinkelkeur_invite_tries = 0
+                AND order_id >= " . (int) $first_order_id . "
+        ");
     }
 
 }
