@@ -112,7 +112,7 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
         }
 
         return
-            sprintf("<script>(function(url,id){var script=document.createElement('script');script.async=true;script.src=url+'/sidebar.js?id='+id+'&c='+cachebuster(10,id);var ref=document.getElementsByTagName('script')[0];ref.parentNode.insertBefore(script,ref);function cachebuster(refreshMinutes,id){var now=Date.now();var interval=refreshMinutes*60e3;var shift=(Math.sin(id)||0)*interval;return Math.floor((now+shift)/interval);}})('https://%s',%d);</script>", $this->msg['API_DOMAIN'], (int) $this->settings['shop_id']);
+            sprintf("<script>(function(url,id){var script=document.createElement('script');script.async=true;script.src=url+'/sidebar.js?id='+id+'&c='+cachebuster(10,id);var ref=document.getElementsByTagName('script')[0];ref.parentNode.insertBefore(script,ref);function cachebuster(refreshMinutes,id){var now=Date.now();var interval=refreshMinutes*60e3;var shift=(Math.sin(id)||0)*interval;return Math.floor((now+shift)/interval);}})('https://%s',%d);</script>", $this->msg['DASHBOARD_DOMAIN'], (int) $this->settings['shop_id']);
 
         return $o;
     }

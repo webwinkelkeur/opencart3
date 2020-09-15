@@ -82,7 +82,7 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
                 $post['order_data'] = json_encode($this->getOrderData($order));
             }
 
-            $url = 'https://' . $msg['API_DOMAIN'] . '/api/1.0/invitations.json?' . http_build_query($parameters);
+            $url = 'https://' . $msg['DASHBOARD_DOMAIN'] . '/api/1.0/invitations.json?' . http_build_query($parameters);
             $retriever = new Peschar_URLRetriever();
             $response = $retriever->retrieve($url, $post);
             if($this->isInviteSent($response)) {
