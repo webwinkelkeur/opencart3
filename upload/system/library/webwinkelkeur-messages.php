@@ -33,5 +33,5 @@ return array(
 
 // catalog
 'DASHBOARD_DOMAIN' => 'dashboard.webwinkelkeur.nl',
-'WWK_DOMAIN' => 'www.webwinkelkeur.nl'
+'APP_DOMAIN' => 'www.webwinkelkeur.nl'
 );
