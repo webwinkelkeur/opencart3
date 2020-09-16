@@ -32,6 +32,6 @@ return array(
 'INVITE_GENERIC_ERROR' => 'De Webwinkelkeur-server kon niet worden bereikt.',
 
 // catalog
-'API_DOMAIN' => 'dashboard.webwinkelkeur.nl',
+'DASHBOARD_DOMAIN' => 'dashboard.webwinkelkeur.nl',
 'APP_DOMAIN' => 'www.webwinkelkeur.nl'
 );
