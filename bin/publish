@@ -9,5 +9,5 @@ git push --tags origin
 version="$(git describe --tags --match 'v*' --exact-match)"
 if [[ $version != "" ]]; then
     ./bin/package
-    hub release create -o -a ./dist/opencart3-webwinkelkeur-$version.zip -m $version $version
+    hub release create -o -a ./dist/opencart3-webwinkelkeur-$version.ocmod.zip -m $version $version
 fi
