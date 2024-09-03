@@ -242,7 +242,7 @@ class ControllerExtensionModuleWebwinkelkeur extends Controller {
 
         $wwk_settings = array();
         foreach($settings as $key => $value) {
-            $wwk_settings["webwinkelkeur_${key}"] = $value;
+            $wwk_settings[sprintf("webwinkelkeur_%s", $key)] = $value;
         }
 
         $this->model_setting_setting->editSetting('webwinkelkeur', $wwk_settings);
