@@ -176,19 +176,25 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
         $lines_query = "SELECT * FROM `" . DB_PREFIX . "order_product` WHERE `order_id` = {$order['order_id']}";
         $order['order_lines'] = $this->db->query($lines_query)->rows;
 
-        $order_data = array(
+        try {
+            $products = $this->getOrderProducts($order);
+        } catch (Exception $e) {
+            $products = [];
+        }
+
+        $order_data = [
             'order' => $order,
-            'products' => $this->getOrderProducts($order),
+            'products' => $products,
             'customer' => $customer,
             'invoice_address' => $invoice_address,
-            'delivery_address' => $delivery_address
-        );
+            'delivery_address' => $delivery_address,
+        ];
 
         return $order_data;
     }
 
     private function getOrderProducts($order) {
-        $product_ids = array();
+        $product_ids = [];
         foreach ($order['order_lines'] as $line) {
             if (!$line['product_id']) {
                 continue;
@@ -197,7 +203,7 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
         }
 
         if (empty ($product_ids)) {
-            return array();
+            return [];
         }
 
         $products_query = "
@@ -207,20 +213,39 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
             ON `p`.`product_id` = `pd`.`product_id`
                 AND `pd`.`language_id` = {$order['language_id']}
           WHERE `p`.`product_id` IN (" . join(',', $product_ids) . ')';
-        $products = $this->db->query($products_query)->rows;
+        $products_data = $this->db->query($products_query)->rows;
 
-        $base_url = $this->request->server['HTTPS']
-                    ? $this->config->get('config_ssl')
-                    : $this->config->get('config_url');
-        foreach ($products as &$product) {
-            $images = array($base_url . 'image/' . $product['image']);
-            $image_query = "SELECT * FROM `" . DB_PREFIX . "product_image` WHERE `product_id` = {$product['product_id']}";
-            foreach ($this->db->query($image_query)->rows as $image) {
-                $images[] = $base_url . 'image/' . $image['image'];
-            }
-            $product['image_urls'] = $images;
+
+        $products = [];
+        foreach ($products_data as $product) {
+            $products[] = $this->prepareProductData($product);
         }
+
         return $products;
+    }
+
+    private function prepareProductData($product) {
+        $base_url = $this->request->server['HTTPS']
+            ? $this->config->get('config_ssl')
+            : $this->config->get('config_url');
+
+        return [
+            'id' => $product['product_id'],
+            'name' => $product['name'],
+            'url' => $this->getProductUrl($product, $base_url),
+            'image_url' => $this->getProductImageUrl($product, $base_url),
+            'gtin' => $product['ean'],
+            'sku' => $product['sku'],
+            'price' => $product['price'],
+        ];
+    }
+
+    private function getProductUrl($product, $base_url) {
+        return $this->url->link('product/product', 'product_id=' . $product['product_id']);
+    }
+
+    private function getProductImageUrl($product, $base_url) {
+        return $base_url . 'image/' . $product['image'];
     }
 
     public function getSettings() {
