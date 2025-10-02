@@ -229,6 +229,8 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
             ? $this->config->get('config_ssl')
             : $this->config->get('config_url');
 
+        $base_url = rtrim($base_url, '/') . '/';
+
         return [
             'id' => $product['product_id'],
             'name' => $product['name'],
