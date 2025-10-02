@@ -241,7 +241,7 @@ class ModelExtensionModuleWebwinkelkeur extends Model {
     }
 
     private function getProductUrl($product, $base_url) {
-        return $this->url->link('product/product', 'product_id=' . $product['product_id']);
+        return $base_url . 'index.php?route=product/product&product_id=' . $product['product_id'];
     }
 
     private function getProductImageUrl($product, $base_url) {
